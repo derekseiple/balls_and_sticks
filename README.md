@@ -1,6 +1,7 @@
 # Balls and Sticks
 
-The purpose of this project is to be able to create and 3D print ball-and-stick models of molecules. This project was
+The purpose of this project is to be able to create and 3D print
+[ball-and-stick](https://en.wikipedia.org/wiki/Ball-and-stick_model) models of molecules. This project was
 motivated by a desire to create a geometrically accurate model of the DNA helix detailed to show the individual atoms
 that compose the molecule.
 
