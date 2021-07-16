@@ -1,6 +1,12 @@
 /*
  * connection_defaults.scad
  *
+ * Copyright © 2021 Derek Seiple
+ * Licensed under Creative Commons BY-NC-SA 3.0. See license file.
+ */
+
+
+/*
  * This file should only define constants and therefore be included into any other files that need them. A use statement
  * will not import these constants.
  *
@@ -8,8 +14,6 @@
  * work closely together, and because we want to easily be able to manage these defaults we define them in one place and
  * make use of them in both the pin module and sleeve module.
  */
-
-
 CONNECTION_HEIGHT = 16;        // total height of the pin
 CONNECTION_RADIUS = 2.5;       // radius of the pin shaft
 CONNECTION_BUMP_WIDTH = 0.5;   // the width of the bump out (from the shaft to outermost point)

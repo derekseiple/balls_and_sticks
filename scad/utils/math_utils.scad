@@ -1,5 +1,8 @@
 /*
  * math_utils.scad
+ *
+ * Copyright © 2021 Derek Seiple
+ * Licensed under Creative Commons BY-NC-SA 3.0. See license file.
  */
 
 /*
