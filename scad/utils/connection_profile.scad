@@ -22,13 +22,9 @@ module connection_profile(height, radius, bump_width, bump_height) {
         pieSlice(bump_radius, 0, 90);
       }
       square(size = [radius, height], center = false);
-      translate([radius + bump_width - bump_radius, height + (bump_radius / 2), 0]) {
+      translate([radius + bump_width - bump_radius, height, 0]) {
         pieSlice(bump_radius, 270, 360);
       }
     };
-    // We remove this square from the above to clean up the partial bump at the top
-    translate([0, height, 0]) {
-      square(radius + bump_width, center = false);
-    }
   }
 }

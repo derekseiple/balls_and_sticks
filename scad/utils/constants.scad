@@ -18,3 +18,10 @@
  * magnitude bigger
  */
 INF = 1000;
+
+/*
+ * Sometime, in order for the geometry to render properly we need parts to overlap by some small amount. EPS is the
+ * value we use whenever possible. We set it to a reasonably small value. Since we will be 3D printing these parts we
+ * just choose a value that is smaller than the tolerance of the printer.
+ */
+EPS = 0.001
