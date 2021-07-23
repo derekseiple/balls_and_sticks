@@ -20,23 +20,21 @@ module connection_pin(
   connection_bump_width = CONNECTION_BUMP_WIDTH,   // the width of the bump out (from the shaft to outermost point)
   connection_bump_height = CONNECTION_BUMP_HEIGHT, // the total height of the middle bump
   pin_slot_width = PIN_SLOT_WIDTH,                 // the width of the slot
-  pin_hole_radius = PIN_HOLE_RADIUS                // radius of the inner hole
+  pin_slot_length_pct = PIN_SLOT_LENGTH_PCT        // specifies the slot length as a percentage of the connection height
 ) {
-  assert(pin_hole_radius < connection_radius, "pin_hole_radius must be less than connection_radius.");
-
-  half_pin() {
-    pin_profile(connection_height, connection_radius, connection_bump_width, connection_bump_height);
-    cylinder(h = INF, r = pin_hole_radius, center = true);
-    translate([0, 0, connection_height / 2 + pin_slot_width / 2]) {
-      relief_slot(pin_slot_width, connection_height / 2); // TODO Slot tuning
+  difference() {
+    copy_and_mirror([0, 0, 1]) {
+      half_pin() {
+        connection_profile(connection_height, connection_radius, connection_bump_width, connection_bump_height);
+        translate([0, 0, (1 - pin_slot_length_pct) * connection_height + pin_slot_width / 2]) {
+          relief_slot(pin_slot_width, pin_slot_length_pct * connection_height);
+        };
+      };
     };
-  };
-  mirror([0, 0, 1]) {
-    half_pin() {
-      pin_profile(connection_height, connection_radius, connection_bump_width, connection_bump_height);
-      cylinder(h = INF, r = pin_hole_radius, center = true);
-      translate([0, 0, connection_height / 2 + pin_slot_width / 2]) {
-        relief_slot(pin_slot_width, connection_height / 2);
+    // remove two flat sides so we have enough of a surface to adhere to printer bed
+    copy_and_mirror([0, 1, 0]) {
+      translate([-connection_height, 0.94 * connection_radius, -(3 * connection_height / 2)]) {
+        cube(3 * connection_height, center = false);
       };
     };
   }
@@ -52,21 +50,17 @@ module connection_pin(
       rotate_extrude() {
         children(0); // The outer profile
       };
-      children(1); // The hole
-      children(2); // The slot
+      children(1); // The slot
     }
   }
 
   /*
-   * We take the connection_profile and modify it slightly for the pin.
+   * This copies the modules and mirrors them according to the vector.
    */
-  module pin_profile(connection_height, connection_radius, connection_bump_width, connection_bump_height) {
-    difference() {
-      connection_profile(connection_height, connection_radius, connection_bump_width, connection_bump_height);
-      // We remove the top of the profile so the part of the pin that gets inserted is narrower
-      translate([0, connection_height - (connection_bump_height / 6), 0]) { // TODO pin width tuning
-        square(INF, center = false);
-      }
+  module copy_and_mirror(v) {
+    children();
+    mirror(v) {
+      children();
     }
   }
 
