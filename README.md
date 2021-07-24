@@ -17,5 +17,3 @@ well as the constraints imposed upon the medium of 3D printing.
 There are two main parts of this repo. The [docs](./docs/README.md) section will explain the details and decisions
 behind the design of the molecular models, and the [scad](./scad) directory will contain scripts and utilities that are
 used to generate the molecular models.
-
-![](docs/images/connection_pin.png)
