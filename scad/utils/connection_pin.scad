@@ -8,6 +8,7 @@
 include <./constants.scad>;
 include <./connection_defaults.scad>;
 use <./connection_profile.scad>;
+use <./module_utils.scad>;
 
 /*
  * This creates a connection pin that will be used to connect the different atoms together. The design aims
@@ -43,7 +44,7 @@ module connection_pin(
 
   /*
    * Creates the upper half of the pin that will then be mirrored. This expects the profile to be the first module
-   * passed in , followed by the hole and slot to be removed.
+   * passed in followed by the slot to be removed.
    */
   module half_pin() {
     difference() {
@@ -51,16 +52,6 @@ module connection_pin(
         children(0); // The outer profile
       };
       children(1); // The slot
-    }
-  }
-
-  /*
-   * This copies the modules and mirrors them according to the vector.
-   */
-  module copy_and_mirror(v) {
-    children();
-    mirror(v) {
-      children();
     }
   }
 
