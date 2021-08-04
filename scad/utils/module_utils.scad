@@ -15,4 +15,3 @@ module copy_and_mirror(v) {
     children();
   }
 }
-  
