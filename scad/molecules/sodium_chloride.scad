@@ -1,3 +1,10 @@
+/*
+ * sodium_chloride.scad
+ *
+ * Copyright © 2021 Derek Seiple
+ * Licensed under Creative Commons BY-NC-SA 3.0. See license file.
+ */
+
 include <../utils/constants.scad>;
 use <./diatomic_molecule.scad>;
 use <../atoms/atom.scad>;
