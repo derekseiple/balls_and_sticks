@@ -3,7 +3,10 @@ use <./diatomic_molecule.scad>;
 use <../atoms/atom.scad>;
 
 
-
+/*
+ * This will create a sodium chloride molecule. We use 238.6pm for the bond distance and the Van der Waals radii in this
+ * model.
+ */
 module sodium_chloride() {
   sodium_radius = 227*pm;
   sodium_color = "violet";
@@ -13,7 +16,10 @@ module sodium_chloride() {
   diatomic_molecule(sodium_radius, sodium_color, chlorine_radius, chlorine_color, bond_distance);
 }
 
-// The layout to actually print it...
+
+/*
+ * This is a convenience function that will print one of the atoms.
+ */
 module sodium_chloride_print_violet() {
   sodium_radius = 227*pm;
   sodium_color = "violet";
@@ -22,6 +28,10 @@ module sodium_chloride_print_violet() {
   space_filling_atom(sodium_radius, chlorine_radius, bond_distance, sodium_color);
 }
 
+
+/*
+ * This is a convenience function that will print one of the atoms.
+ */
 module sodium_chloride_print_green() {
   sodium_radius = 227*pm;
   chlorine_radius = 175*pm;
