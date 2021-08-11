@@ -6,18 +6,16 @@
  */
 
 include <../utils/constants.scad>;
+use <../atoms/element_properties.scad>;
+include <../atoms/elements.scad>;
 use <./diatomic_molecule.scad>;
 
 
 /*
- * This will create a dihydrogen molecule. We use the covalent radius (32pm) to determine the bond distance and the
- * Van der Waals radius (120pm) in this model.
+ * This will create a dihydrogen molecule. We use 64pm for the bond distance as it is twice the covalent bond radius.
  */
 module dihydrogen() {
-  hydrogen_radius = 120*pm;
-  bond_distance = 2 * 32*pm;
-  hydrogen_color = "white";
-  homonuclear_diatomic_molecule(hydrogen_radius, bond_distance, hydrogen_color);
+  homonuclear_diatomic_molecule(van_der_waals_radius(H), 64*pm, cpk_color(H));
 }
 
 
@@ -25,8 +23,5 @@ module dihydrogen() {
  * This is a convenience function that will arrange the two atoms so they can be printed.
  */
 module dihydrogen_print() {
-  hydrogen_radius = 120*pm;
-  bond_distance = 2 * 32*pm;
-  hydrogen_color = "white";
-  homonuclear_diatomic_molecule_print(hydrogen_radius, bond_distance, hydrogen_color);
+  homonuclear_diatomic_molecule_print(van_der_waals_radius(H), 64*pm, cpk_color(H));
 }
