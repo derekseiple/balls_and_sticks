@@ -15,7 +15,7 @@ cpk_color_list = [
   "white",      // Hydrogen  
   "cyan",       // Helium    
   "violet",     // Lithium   
-  "dark green", // Beryllium  
+  "darkgreen",  // Beryllium  
   "beige",      // Boron     
   "black",      // Carbon    
   "blue",       // Nitrogen  
@@ -23,7 +23,7 @@ cpk_color_list = [
   "green",      // Fluorine  
   "cyan",       // Neon      
   "violet",     // Sodium    
-  "dark green", // Magnesium 
+  "darkgreen",  // Magnesium 
   "pink",       // Aluminum  
   "pink",       // Silicon   
   "orange",     // Phosphorus
@@ -31,7 +31,7 @@ cpk_color_list = [
   "green",      // Chlorine  
   "cyan",       // Argon     
   "violet",     // Potassium 
-  "dark green"  // Calcium   
+  "darkgreen"   // Calcium   
 ];
 
 
