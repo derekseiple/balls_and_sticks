@@ -6,21 +6,17 @@
  */
 
 include <../utils/constants.scad>;
+use <../atoms/element_properties.scad>;
+include <../atoms/elements.scad>;
 use <./diatomic_molecule.scad>;
 use <../atoms/atom.scad>;
 
 
 /*
- * This will create a sodium chloride molecule. We use 238.6pm for the bond distance and the Van der Waals radii in this
- * model.
+ * This will create a sodium chloride molecule. We use 238.6pm for the bond distance.
  */
 module sodium_chloride() {
-  sodium_radius = 227*pm;
-  sodium_color = "violet";
-  chlorine_radius = 175*pm;
-  chlorine_color = "green";
-  bond_distance = 238.6*pm;
-  diatomic_molecule(sodium_radius, sodium_color, chlorine_radius, chlorine_color, bond_distance);
+  diatomic_molecule(van_der_waals_radius(Na), cpk_color(Na), van_der_waals_radius(Cl), cpk_color(Cl), 238.6*pm);
 }
 
 
@@ -28,11 +24,7 @@ module sodium_chloride() {
  * This is a convenience function that will print one of the atoms.
  */
 module sodium_chloride_print_violet() {
-  sodium_radius = 227*pm;
-  sodium_color = "violet";
-  chlorine_radius = 175*pm;
-  bond_distance = 238.6*pm;
-  space_filling_atom(sodium_radius, chlorine_radius, bond_distance, sodium_color);
+  space_filling_atom(van_der_waals_radius(Na), van_der_waals_radius(Cl), 238.6*pm, cpk_color(Na));
 }
 
 
@@ -40,9 +32,5 @@ module sodium_chloride_print_violet() {
  * This is a convenience function that will print one of the atoms.
  */
 module sodium_chloride_print_green() {
-  sodium_radius = 227*pm;
-  chlorine_radius = 175*pm;
-  chlorine_color = "green";
-  bond_distance = 238.6*pm;
-  space_filling_atom(chlorine_radius, sodium_radius, bond_distance, chlorine_color);
+  space_filling_atom(van_der_waals_radius(Cl), van_der_waals_radius(Na), 238.6*pm, cpk_color(Cl));
 }
