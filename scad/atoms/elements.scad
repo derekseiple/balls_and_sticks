@@ -8,7 +8,7 @@
 /*
  * This is a (partial) list of the periodic elements. We assign the atomic number to both the element symbol and the
  * element name so that we can easily reference the atomic number by either. We will have several property functions
- * that will take in the atomic number as an argument and this will allow us to pass in the symbol or nma in its place
+ * that will take in the atomic number as an argument and this will allow us to pass in the symbol or name in its place
  * for greater clarity.
  */
 H  = 1;    Hydrogen   = 1;
