@@ -22,7 +22,7 @@ module diatomic_molecule(
   right_color,  // The color to use for the right element
   bond_distance // The distance between the center of the two bonded atoms
 ) {
-  left_slice = atom_slice_distance(left_radius, right_radius, bond_distance);
+  left_slice = atom_interface_distance(left_radius, right_radius, bond_distance);
   right_slice = bond_distance - left_slice;
 
   translate([-left_slice, 0, 0]) {
