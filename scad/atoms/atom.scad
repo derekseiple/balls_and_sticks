@@ -20,14 +20,25 @@ module space_filling_atom(
   bond_distance, // The distance between the centers of the two mating atoms (sum of their bond radius)
   color_name     // The color we want the atom to be
 ) {
-  h = atom_slice_distance(atom_radius, mates_radius, bond_distance);
+  interface_distance = atom_interface_distance(atom_radius, mates_radius, bond_distance);
 
   color(color_name) {
-    // After translating and cutting etc bellow we translate back so it is centered at the origin
-    translate([0, 0, -h]) {
+    add_interface(atom_radius, interface_distance);
+  }
+
+  // Sub modules below //
+
+  /*
+   * This cuts the portion of the atom away so that we have a flat interface to a mating atom. This always cut the
+   * interface along the bottom of the atom (-z direction). To add multiple interfaces you can rotate the atom before
+   * calling this module then rotate back.
+   */
+  module add_interface(atom_radius, interface_distance) {
+    // After translating and cutting etc below we translate back so it is centered at the origin
+    translate([0, 0, -interface_distance]) {
       difference() {
         // start with the atom. We translate it so that the cut happens on the x-y plane
-        translate([0, 0, h]) {
+        translate([0, 0, interface_distance]) {
           sphere(r = atom_radius);
         }
         // remove the portion mating with other atom

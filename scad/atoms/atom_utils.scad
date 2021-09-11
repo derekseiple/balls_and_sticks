@@ -11,7 +11,7 @@
  * distance from the center of the atom to the bottom of the Spherical Cap (https://en.wikipedia.org/wiki/Spherical_cap)
  * that we remove so the two mating atoms can sit flush to each other.
  */
-function atom_slice_distance(atom_radius, mates_radius, bond_distance) =
+function atom_interface_distance(atom_radius, mates_radius, bond_distance) =
   assert(atom_radius > 0, "atom_radius must be positive.")
   assert(mates_radius > 0, "mates_radius must be positive.")
   assert(bond_distance > 0, "bond_distance must be positive.")
