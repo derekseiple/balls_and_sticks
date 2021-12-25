@@ -64,13 +64,15 @@ module space_filling_atom(
             epsilon = SLEEVE_CLEARANCE);
         }
       }
+      // We inset the connection sleeve just slightly to allow for better clearance.
       cylinder(h = CONNECTION_BUMP_HEIGHT / 2 + EPS,
-                 r = CONNECTION_RADIUS + CONNECTION_BUMP_WIDTH + SLEEVE_CLEARANCE,
-                 center = true);
+               r = CONNECTION_RADIUS + CONNECTION_BUMP_WIDTH + SLEEVE_CLEARANCE,
+               center = true);
+      // We also allow some extra space inside the atom so we don't get some interference with the pin.
       translate([0, 0, CONNECTION_HEIGHT + (CONNECTION_BUMP_HEIGHT / 4) - EPS]) {
-          cylinder(h = CONNECTION_BUMP_HEIGHT / 2,
-                   r = CONNECTION_RADIUS + CONNECTION_BUMP_WIDTH + SLEEVE_CLEARANCE,
-                   center = false);
+        cylinder(h = CONNECTION_BUMP_HEIGHT / 2,
+                 r = CONNECTION_RADIUS + CONNECTION_BUMP_WIDTH + SLEEVE_CLEARANCE,
+                 center = false);
       }
       translate([-3 * atom_radius / 2, -3 * atom_radius / 2, -3 * atom_radius]) {
         cube(3 * atom_radius);
