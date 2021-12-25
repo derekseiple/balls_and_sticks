@@ -7,7 +7,7 @@
 
 include <./constants.scad>;
 include <./connection_defaults.scad>;
-use <./connection_profile.scad>;
+use <./connection_pin_profile.scad>;
 use <./module_utils.scad>;
 
 /*
@@ -26,7 +26,7 @@ module connection_pin(
   difference() {
     copy_and_mirror([0, 0, 1]) {
       half_pin() {
-        connection_profile(connection_height, connection_radius, connection_bump_width, connection_bump_height);
+        connection_pin_profile(connection_height, connection_radius, connection_bump_width, connection_bump_height);
         translate([0, 0, (1 - pin_slot_length_pct) * connection_height + pin_slot_width / 2]) {
           relief_slot(pin_slot_width, pin_slot_length_pct * connection_height);
         };
