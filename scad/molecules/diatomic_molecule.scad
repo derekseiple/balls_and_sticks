@@ -27,12 +27,12 @@ module diatomic_molecule(
 
   translate([-left_slice, 0, 0]) {
     rotate([0, 270, 0]) {
-      space_filling_atom(left_radius, right_radius, bond_distance, left_color);
+      space_filling_atom(left_radius, left_color, bond = [right_radius, bond_distance]);
     }
   }
   translate([right_slice, 0, 0]) {
     rotate([0, 90, 0]) {    
-      space_filling_atom(right_radius, left_radius, bond_distance, right_color);
+      space_filling_atom(right_radius, right_color, bond = [left_radius, bond_distance]);
     }
   }
 }
@@ -62,9 +62,9 @@ module homonuclear_diatomic_molecule_print(
   slice = atom_slice_distance(atom_radius, atom_radius, bond_distance);
 
   translate([atom_radius + 2, 0, slice]) {
-    space_filling_atom(atom_radius, atom_radius, bond_distance, atom_color);
+    space_filling_atom(atom_radius, atom_color, bond = [atom_radius, bond_distance]);
   }
   translate([-(atom_radius + 2), 0, slice]) {
-    space_filling_atom(atom_radius, atom_radius, bond_distance, atom_color);
+    space_filling_atom(atom_radius, atom_color, bond = [atom_radius, bond_distance]);
   }
 }
