@@ -23,13 +23,11 @@ module space_filling_atom(
   bond = [],   // A vector of length 2 that holds the radius of the bonding atom ((Generally the Van der Waals radius)
                // and the bond distance respectively.
   bonds = []   // A vector of bond information. Each bond will be a vector of length 3 that holds the radius of the
-               // bonding atom, the bond distance, and a vector that points in the direction of the bond (ie the bond
-               // face will be perpendicular to the vector).
+               // bonding atom, the bond distance, and a vector that holds a pair of vales to indicate the direction of
+               // the bond (inclination angle and azimuthal angle respectively).
 ) {
   assert(len(bond) == 0 || len(bond) == 2,
          "If bond is provided it must have exactly 2 elements, the bonding radius and bond distance.")
-  assert(len(bonds) == 0,
-         "Multiple bonds are not yet supported in space_filling_atom.")
 
   color(color_name) {
     difference() {
@@ -37,11 +35,26 @@ module space_filling_atom(
       sphere(r = atom_radius);
 
       if (len(bond) == 2) {
+        assert(bond[0] > 0, "Bond radius must be positive.");
+        assert(bond[1] > 0, "Bond distance must be positive.");
         interface_complement(atom_radius, atom_interface_distance(atom_radius, bond[0], bond[1]));
-      }
+      };
 
-      // Add all of the additional bonds that were given
-      // TODO
+      union() {
+        // Add all of the additional bonds that were given
+        for (b = bonds) {
+          assert(len(b) == 3, "Bonds malformed. Must contain bonding radius, bond distance, and bond direction.")
+          assert(b[0] > 0, "All bond radii must be positive.");
+          assert(b[1] > 0, "All bond distances must be positive.");
+          assert(len(b[2]) == 2, "Bonds malformed. Bond direction must have inclination and azimuthal angle.")
+          assert(b[2][0] >= -90 && b[2][0] <= 90, "All bond inclination angles must lie between -90 and +90.")
+          assert(b[2][1] >= -180 && b[2][1] <= 180, "All bond azimuthal angles must lie between -180 and +180.")
+
+          rotate([0, -inclination_angle(b[2][0]), b[2][1]]) {
+            interface_complement(atom_radius, atom_interface_distance(atom_radius, b[0], b[1]));
+          }
+        }
+      };
     }
   }
 
@@ -79,4 +92,10 @@ module space_filling_atom(
       }
     }
   }
+
+  /*
+   * This converts the input inclination angle to the one needed that will work with the interface_complement module.
+   */
+  function inclination_angle(inclination) =
+    inclination + 90;
 }
