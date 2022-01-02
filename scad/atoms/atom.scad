@@ -67,7 +67,7 @@ module space_filling_atom(
    */
   module interface_complement(atom_radius, interface_distance) {
     translate([0, 0, -interface_distance]) {
-      translate([0, 0, CONNECTION_BUMP_HEIGHT / 4]) {
+      translate([0, 0, CONNECTION_BUMP_WIDTH / 4]) {
         rotate_extrude() {
           connection_sleeve_profile(
             connection_height = CONNECTION_HEIGHT,
@@ -78,12 +78,12 @@ module space_filling_atom(
         }
       }
       // We inset the connection sleeve just slightly to allow for better clearance.
-      cylinder(h = CONNECTION_BUMP_HEIGHT / 2 + EPS,
+      cylinder(h = CONNECTION_BUMP_WIDTH / 2 + EPS,
                r = CONNECTION_RADIUS + CONNECTION_BUMP_WIDTH + SLEEVE_CLEARANCE,
                center = true);
       // We also allow some extra space inside the atom so we don't get some interference with the pin.
-      translate([0, 0, CONNECTION_HEIGHT + (CONNECTION_BUMP_HEIGHT / 4) - EPS]) {
-        cylinder(h = CONNECTION_BUMP_HEIGHT / 2,
+      translate([0, 0, CONNECTION_HEIGHT + (CONNECTION_BUMP_WIDTH / 4) - EPS]) {
+        cylinder(h = CONNECTION_BUMP_WIDTH / 2,
                  r = CONNECTION_RADIUS + CONNECTION_BUMP_WIDTH + SLEEVE_CLEARANCE,
                  center = false);
       }
