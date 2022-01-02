@@ -15,19 +15,19 @@
  *
  * These define the defaults of the connection profile.
  */
-CONNECTION_HEIGHT = 8;         // total height of the connection profile
-CONNECTION_RADIUS = 2.5;       // radius of the pin shaft
+CONNECTION_HEIGHT = 6.25;      // total height of the connection profile
+CONNECTION_RADIUS = 2.25;      // radius of the pin shaft
 CONNECTION_BUMP_WIDTH = 0.5;   // the width of the bump out (from the shaft to outermost point)
 CONNECTION_BUMP_HEIGHT = 1.75; // the total height of the middle bump (from where it first extends beyond the shaft)
 
 /*
  * These define the defaults of the non-profile parts of the pin.
  */
-PIN_SLOT_WIDTH = 1;            // the width of the slot in the pin
+PIN_SLOT_WIDTH = 0.9;          // the width of the slot in the pin
 PIN_SLOT_LENGTH_PCT = 0.75;    // specifies the slot length as a percentage of the connection height
 
 /*
  * These define the defaults of the non-profile parts of the sleeve.
  */
-SLEEVE_RADIUS = 4.5;              // the outside radius of the sleeve
-SLEEVE_CLEARANCE = 0.25;          // the gap to have between the pin geometry and the sleeve
+SLEEVE_RADIUS = 4.5;           // the outside radius of the sleeve
+SLEEVE_CLEARANCE = 0.25;       // the gap to have between the pin geometry and the sleeve

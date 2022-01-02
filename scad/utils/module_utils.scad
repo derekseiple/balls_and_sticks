@@ -15,3 +15,13 @@ module copy_and_mirror(v) {
     children();
   }
 }
+
+/*
+ * Similar to above, this allows us to copy an element and apply a rotation to the copied element.
+ */
+module copy_and_rotate(v) {
+  children();
+  rotate(v) {
+    children();
+  }
+}
