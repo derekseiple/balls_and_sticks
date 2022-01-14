@@ -9,6 +9,7 @@ include <../utils/constants.scad>;
 include <../utils/connection_defaults.scad>;
 use <../utils/connection_sleeve.scad>;
 use <../utils/connection_sleeve_profile.scad>;
+use <../utils/spherical_cap.scad>;
 use <./atom_utils.scad>;
 
 /*
@@ -86,6 +87,7 @@ module space_filling_atom(
         cylinder(h = CONNECTION_BUMP_WIDTH / 2,
                  r = CONNECTION_RADIUS + CONNECTION_BUMP_WIDTH + SLEEVE_CLEARANCE,
                  center = false);
+        spherical_cap(r = CONNECTION_RADIUS + CONNECTION_BUMP_WIDTH + SLEEVE_CLEARANCE);
       }
       translate([-3 * atom_radius / 2, -3 * atom_radius / 2, -3 * atom_radius]) {
         cube(3 * atom_radius);
