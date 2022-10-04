@@ -31,8 +31,8 @@ EPS = 0.001;
 /*
  * We want a convenient way to work in the units at the atomic scale while at the same time ending up with a reasonable
  * real-world scale. Since the convenient unit is the picometer (pm), we define that unit to be a scale factor, so that
- * if we want something that is say 120pm is length we can simply express it as 120*pm. We chose this particular scale
- * factor so that the Van der Waals radius of hydrogen is 11.5mm in real-world scale. That is 120*pm == 11.5,
- * or pm = 115/1200. This is still a little larger than ideal, but we are limited by the size of the connection pins.
+ * if we want something that is say 120pm in length we can simply express it as 120*pm. We chose this particular scale
+ * factor so that the Van der Waals radius of hydrogen is 9mm in real-world scale. That is 120*pm == 9,
+ * or pm = 9/120.
  */
-pm = 115/1200;
+pm = 9/120;
