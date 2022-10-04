@@ -12,7 +12,7 @@ main features available.
 
 The natural unit to use when working on the atomic scale is the picometer, but we also have to create the atoms and
 molecules at a scale that allows us to 3D print them. Part of the constraint on size is being able to print the
-connection pins that join multiple atoms together. Therefore we define a scale so that we can specify dimensions in
+snap rings that join multiple atoms together. Therefore we define a scale so that we can specify dimensions in
 picometers. We call the scaling constant `pm`. So if we want something to be 100 picometers we can specify it as
 `100*pm`. This scaling factor (and other constants) is defined in `scad/utils/constants.scad`.
 
@@ -41,7 +41,7 @@ will return the Van der Waals radius of Hydrogen.
 The `space_filling_atom` module can be found in `scad/atoms/atom.scad` and is the main vehicle for creating the
 individual atoms within molecules. Depending on what molecule is being produced, you can adjust the bond distances and
 angles. For each bond that is specified, this will create the bonding interface surface along with the negative space to
-receive a `connection_pin`. For example, to make a hydrogen atom that will bond with another hydrogen atom you would do
+receive a `snap_ring`. For example, to make a hydrogen atom that will bond with another hydrogen atom you would do
 this:
 
 ```

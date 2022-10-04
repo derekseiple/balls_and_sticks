@@ -6,10 +6,9 @@
  */
 
 include <../utils/constants.scad>;
-include <../utils/connection_defaults.scad>;
-use <../utils/connection_sleeve.scad>;
-use <../utils/connection_sleeve_profile.scad>;
 use <../utils/spherical_cap.scad>;
+use <../utils/snap_joint.scad>;
+include <../utils/snap_defaults.scad>;
 use <./atom_utils.scad>;
 
 /*
@@ -68,26 +67,11 @@ module space_filling_atom(
    */
   module interface_complement(atom_radius, interface_distance) {
     translate([0, 0, -interface_distance]) {
-      translate([0, 0, CONNECTION_BUMP_WIDTH / 4]) {
-        rotate_extrude() {
-          connection_sleeve_profile(
-            connection_height = CONNECTION_HEIGHT,
-            connection_radius = CONNECTION_RADIUS,
-            connection_bump_width = CONNECTION_BUMP_WIDTH,
-            connection_bump_height = CONNECTION_BUMP_HEIGHT,
-            epsilon = SLEEVE_CLEARANCE);
-        }
+      translate([0, 0, -2*EPS + SNAP_INDENT]) {
+        snap_receiver_compliment();
       }
-      // We inset the connection sleeve just slightly to allow for better clearance.
-      cylinder(h = CONNECTION_BUMP_WIDTH / 2 + EPS,
-               r = CONNECTION_RADIUS + CONNECTION_BUMP_WIDTH + SLEEVE_CLEARANCE,
-               center = true);
-      // We also allow some extra space inside the atom so we don't get some interference with the pin.
-      translate([0, 0, CONNECTION_HEIGHT + (CONNECTION_BUMP_WIDTH / 4) - EPS]) {
-        cylinder(h = CONNECTION_BUMP_WIDTH / 2,
-                 r = CONNECTION_RADIUS + CONNECTION_BUMP_WIDTH + SLEEVE_CLEARANCE,
-                 center = false);
-        spherical_cap(r = CONNECTION_RADIUS + CONNECTION_BUMP_WIDTH + SLEEVE_CLEARANCE);
+      translate([0, 0, 4*(SNAP_LIP - EPS) + SNAP_INDENT - EPS]) {
+        spherical_cap(r = SNAP_CLEARANCE / 2 + SNAP_RADIUS - SNAP_LIP);
       }
       translate([-3 * atom_radius / 2, -3 * atom_radius / 2, -3 * atom_radius]) {
         cube(3 * atom_radius);

@@ -59,7 +59,7 @@ module homonuclear_diatomic_molecule_print(
   bond_distance,
   atom_color
 ) {
-  slice = atom_slice_distance(atom_radius, atom_radius, bond_distance);
+  slice = atom_interface_distance(atom_radius, atom_radius, bond_distance);
 
   translate([atom_radius + 2, 0, slice]) {
     space_filling_atom(atom_radius, atom_color, bond = [atom_radius, bond_distance]);
