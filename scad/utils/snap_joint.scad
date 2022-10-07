@@ -19,21 +19,23 @@ module snap_ring(
   radius = SNAP_RADIUS,
   indent = SNAP_INDENT
 ) {
-  difference() {
-    copy_and_mirror([0, 0, 1]) {
-      rotate_extrude() {
-        translate([radius - (clearance / 2), indent, 0]) {
-          polygon(points = [
-            [0, 0], [0 + lip, lip], [0 + lip, 2*lip], [0, 3*lip], [-2, 3*lip], [-2, 0]
-          ]);
-          translate([-2, -indent]) {
-            square(size = [2, indent], center = false);
+  rotate([0, 90, 0]) {
+    difference() {
+      copy_and_mirror([0, 0, 1]) {
+        rotate_extrude() {
+          translate([radius - (clearance / 2), indent, 0]) {
+            polygon(points = [
+              [0, 0], [0 + lip, lip], [0 + lip, 2*lip], [0, 3*lip], [-2, 3*lip], [-2, 0]
+            ]);
+            translate([-2, -indent]) {
+              square(size = [2, indent], center = false);
+            }
           }
         }
+      };
+      translate([radius - (clearance / 2) - EPS, -3 * radius / 2, -3 * radius / 2]) {
+        cube(3 * radius);
       }
-    };
-    translate([radius - (clearance / 2) - EPS, -3 * radius / 2, -3 * radius / 2]) {
-      cube(3 * radius);
     }
   }
 }

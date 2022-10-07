@@ -12,5 +12,5 @@
 
 SNAP_CLEARANCE = 0.6; // space between the snap ring and the portion that holds it, like the atom.
 SNAP_LIP = 0.75;      // defines the size of the "lip" in the snap ring.
-SNAP_RADIUS = 4.5;    // allows us to control how large the snap ring is.
+SNAP_RADIUS = 3.25;    // allows us to control how large the snap ring is.
 SNAP_INDENT = 0.25;   // this defines how far inset from the bottom of the atom we position the snap joint.

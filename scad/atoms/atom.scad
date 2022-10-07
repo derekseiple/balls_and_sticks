@@ -9,6 +9,7 @@ include <../utils/constants.scad>;
 use <../utils/spherical_cap.scad>;
 use <../utils/snap_joint.scad>;
 include <../utils/snap_defaults.scad>;
+use <../utils/text_utils.scad>;
 use <./atom_utils.scad>;
 
 /*
@@ -20,30 +21,33 @@ use <./atom_utils.scad>;
 module space_filling_atom(
   atom_radius, // The radius of the atom we are making (Generally the Van der Waals radius)
   color_name,  // The color we want the atom to be
-  bond = [],   // A vector of length 2 that holds the radius of the bonding atom ((Generally the Van der Waals radius)
-               // and the bond distance respectively.
-  bonds = []   // A vector of bond information. Each bond will be a vector of length 3 that holds the radius of the
+  bond = [],   // A vector of length 2 or 3 that holds the radius of the bonding atom, the bond distance, and optionally
+               // a label that will be imbedded in the bond surface respectively.
+  bonds = []   // A vector of bond information. Each bond will be a vector of length 3 or 4 that holds the radius of the
                // bonding atom, the bond distance, and a vector that holds a pair of vales to indicate the direction of
-               // the bond (inclination angle and azimuthal angle respectively).
+               // the bond (inclination angle and azimuthal angle) respectively. The 4th element is an optional label
+               // that will be imbedded in the bond surface.
 ) {
-  assert(len(bond) == 0 || len(bond) == 2,
-         "If bond is provided it must have exactly 2 elements, the bonding radius and bond distance.")
+  assert(len(bond) == 0 || len(bond) == 2 || len(bond) == 3,
+         "If bond is provided it must have the bonding radius, bond distance, and an optional label.")
 
   color(color_name) {
     difference() {
       // We start with the atom then subtract out the mating faces below.
       sphere(r = atom_radius);
 
-      if (len(bond) == 2) {
+      if (len(bond) > 0) {
         assert(bond[0] > 0, "Bond radius must be positive.");
         assert(bond[1] > 0, "Bond distance must be positive.");
-        interface_complement(atom_radius, atom_interface_distance(atom_radius, bond[0], bond[1]));
+        interface_complement(atom_radius, atom_interface_distance(atom_radius, bond[0], bond[1]),
+                             len(bond) == 3 ? bond[2] : "");
       };
 
       union() {
         // Add all of the additional bonds that were given
         for (b = bonds) {
-          assert(len(b) == 3, "Bonds malformed. Must contain bonding radius, bond distance, and bond direction.")
+          assert(len(b) == 3 || len(b) == 4,
+                 "Bonds malformed. Must contain bonding radius, bond distance, bond direction, and an optional label.")
           assert(b[0] > 0, "All bond radii must be positive.");
           assert(b[1] > 0, "All bond distances must be positive.");
           assert(len(b[2]) == 2, "Bonds malformed. Bond direction must have inclination and azimuthal angle.")
@@ -51,7 +55,8 @@ module space_filling_atom(
           assert(b[2][1] >= -180 && b[2][1] <= 180, "All bond azimuthal angles must lie between -180 and +180.")
 
           rotate([0, -inclination_angle(b[2][0]), b[2][1]]) {
-            interface_complement(atom_radius, atom_interface_distance(atom_radius, b[0], b[1]));
+            interface_complement(atom_radius, atom_interface_distance(atom_radius, b[0], b[1]),
+                                 len(b) == 4 ? b[3] : "");
           }
         }
       };
@@ -65,7 +70,7 @@ module space_filling_atom(
    * cuts the interface along the bottom of the atom (-z direction). To add multiple interfaces you can rotate the atom
    * before subtracting away this mating interface.
    */
-  module interface_complement(atom_radius, interface_distance) {
+  module interface_complement(atom_radius, interface_distance, label) {
     translate([0, 0, -interface_distance]) {
       translate([0, 0, -2*EPS + SNAP_INDENT]) {
         snap_receiver_compliment();
@@ -75,6 +80,13 @@ module space_filling_atom(
       }
       translate([-3 * atom_radius / 2, -3 * atom_radius / 2, -3 * atom_radius]) {
         cube(3 * atom_radius);
+      }
+      translate([0, 0, -0.5]) {
+        linear_extrude(1) {
+          mirror([0, 1, 0]) {
+            revolve_text(1.25*SNAP_RADIUS, 4, str(label,label));
+          }
+        }
       }
     }
   }
