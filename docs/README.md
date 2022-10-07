@@ -64,3 +64,21 @@ space_filling_atom(
 );
 ```
 ![](./water_oxygen.png)
+
+Sometimes when working with complex molecules it can be hard to keep track of what surfaces are supposed to bond
+together. To keep everything straight we can add an optional label to each of the bonds that will be embedded on the
+bonding surface. For example this will produce the following:
+
+```
+space_filling_atom(
+  atom_radius = van_der_waals_radius(H),
+  color_name = cpk_color(H),
+  bonds = [
+    [van_der_waals_radius(H), 95.84*pm, [0, -90], "ABCD "]
+  ]
+);
+```
+![](./atom_with_label.png)
+
+While there is no limit to the number of characters you can use in your label, 6 is about the most you can use and still
+be able to read the label. You can also add a label when using the `bond` option as well.
