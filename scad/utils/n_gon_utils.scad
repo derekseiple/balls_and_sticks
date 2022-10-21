@@ -191,8 +191,8 @@ function 5_gon_angles(
     a345
   ], [
     540 - a345 - ang(3, 4, a4g) - ang(2, 3, a4g) - (ang(1, 2, a4g) + law_of_sines(dist(4, 5, d5g), dist(1, 5, d5g), a345 - ang(4, 1, a4g))),
-    law_of_sines(dist(2, 3, d5g), dist(2, 5, d5g), ang(3, 4, a4g) - law_of_sines(dist(4, 5, d5g), dist(3, 5, d5g), a345)),
-    law_of_sines(dist(4, 5, d5g), dist(3, 5, d5g), a345),
+    law_of_sines(dist(3, 4, d5g), dist(3, 5, d5g), a345) + law_of_sines(dist(2, 3, d5g), dist(2, 5, d5g), ang(3, 4, a4g) - law_of_sines(dist(4, 5, d5g), dist(3, 5, d5g), a345)),
+    law_of_sines(dist(3, 4, d5g), dist(3, 5, d5g), a345),
     0,
     undef
   ] ];
@@ -298,9 +298,9 @@ function 6_gon_angles(
     ang(5, 5, a5g),
     a456
   ], [
-    720 - a456 - ang(4, 5, a5g) - ang(3, 4, a5g) - ang(2, 3, a5g) - (ang(1, 2, a5g) + law_of_sines(dist(5, 6, d6g), dist(1, 6, d6g), a456 - ang(5, 4, a5g))),
-    law_of_sines(dist(2, 3, d6g), dist(3, 6, d6g), ang(2, 3, a5g) - law_of_sines(dist(1, 6, d6g), dist(2, 6, d6g), ang(1, 2, a5g) + law_of_sines(dist(5, 6, d6g), dist(1, 6, d6g), a456 - ang(5, 1, a5g)))),
-    law_of_sines(dist(4, 3, d6g), dist(3, 6, d6g), ang(4, 5, a5g) - law_of_sines(dist(5, 6, d6g), dist(4, 6, d6g), a456)),
+    720 - a456 - ang(4, 5, a5g) - ang(3, 4, a5g) - ang(2, 3, a5g) - (ang(1, 2, a5g) + law_of_sines(dist(5, 6, d6g), dist(1, 6, d6g), a456 - ang(5, 1, a5g))),
+    law_of_sines(dist(4, 5, d6g), dist(4, 6, d6g), a456) + law_of_sines(dist(4, 3, d6g), dist(3, 6, d6g), ang(4, 5, a5g) - law_of_sines(dist(5, 6, d6g), dist(4, 6, d6g), a456)) + law_of_sines(dist(2, 3, d6g), dist(2, 6, d6g), ang(2, 3, a5g) - law_of_sines(dist(1, 6, d6g), dist(2, 6, d6g), ang(1, 2, a5g) + law_of_sines(dist(5, 6, d6g), dist(1, 6, d6g), a456 - ang(5, 1, a5g)))),
+    law_of_sines(dist(4, 5, d6g), dist(4, 6, d6g), a456) + law_of_sines(dist(4, 3, d6g), dist(3, 6, d6g), ang(4, 5, a5g) - law_of_sines(dist(5, 6, d6g), dist(4, 6, d6g), a456)),
     law_of_sines(dist(4, 5, d6g), dist(4, 6, d6g), a456),
     0,
     undef
