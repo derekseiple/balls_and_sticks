@@ -22,14 +22,24 @@ module snap_ring(
   rotate([0, 90, 0]) {
     difference() {
       copy_and_mirror([0, 0, 1]) {
-        rotate_extrude() {
-          translate([radius - (clearance / 2), indent, 0]) {
-            polygon(points = [
-              [0, 0], [0 + lip, lip], [0 + lip, 2*lip], [0, 3*lip], [-2, 3*lip], [-2, 0]
-            ]);
-            translate([-2, -indent]) {
-              square(size = [2, indent], center = false);
-            }
+        difference() {
+          union() {
+            rotate_extrude() {
+              translate([radius - (clearance / 2), indent, 0]) {
+                polygon(points = [
+                  [0, 0], [0 + lip, lip], [0 + lip, 2*lip], [0, 3*lip], [-2, 3*lip], [-2, 0]
+                ]);
+                translate([-2, -indent]) {
+                  square(size = [2, indent], center = false);
+                }
+              }
+            };
+            translate([0,0,0.5]) {
+              cylinder(h = 1, r = 1.25, center = true);
+            };
+          }
+          translate([0,0,1.75]) {
+            cube(size = [3*radius, radius + lip - 2, radius + lip - 2], center = true);
           }
         }
       };

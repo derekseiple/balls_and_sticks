@@ -16,3 +16,11 @@ function atom_interface_distance(atom_radius, mates_radius, bond_distance) =
   assert(mates_radius > 0, "mates_radius must be positive.")
   assert(bond_distance > 0, "bond_distance must be positive.")
   ((atom_radius + mates_radius)*(atom_radius - mates_radius) + bond_distance^2) / (2 * bond_distance);
+
+/*
+ * The following function can be used for the various Carbon-Hydrogen bond lengths according to the various bond
+ * hybridizations. See https://en.wikipedia.org/wiki/Carbon%E2%80%93hydrogen_bond
+ */
+function C_H_bond_sp3() = 109.4*pm;
+function C_H_bond_sp2() = 108.7*pm;
+function C_H_bond_sp() = 106*pm;
