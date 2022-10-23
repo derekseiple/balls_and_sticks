@@ -1,4 +1,11 @@
 
+/*
+ * adenine.scad
+ *
+ * Copyright © 2022 Derek Seiple
+ * Licensed under Creative Commons BY-NC-SA 3.0. See license file.
+ */
+
 include <../utils/constants.scad>;
 include <../atoms/atom_utils.scad>;
 use <../atoms/element_properties.scad>;
@@ -15,15 +22,18 @@ use <../utils/n_gon_utils.scad>;
 module adenine(atom = "") {
   if (atom == "N1") { N1(); }
   else if (atom == "C2") { C2(); }
+  else if (atom == "H2") { H2(); }
   else if (atom == "N3") { N3(); }
   else if (atom == "C4") { C4(); }
   else if (atom == "C5") { C5(); }
   else if (atom == "C6") { C6(); }
+  else if (atom == "N6") { N6(); }
+  else if (atom == "H6") { H6(); }
   else if (atom == "N7") { N7(); }
   else if (atom == "C8") { C8(); }
   else if (atom == "N9") { N9(); }
   else {
-    assert(false, "length of opposite side must be positive.");
+    assert(false, str("Unknown atom supplied for adenine: ", atom));
   }
 
   // Sub modules and functions below //
@@ -37,11 +47,14 @@ module adenine(atom = "") {
         atom_radius = van_der_waals_radius(N),
         color_name = cpk_color(N),
         bonds = [
-          [van_der_waals_radius(C), dist_major(1, 2), [0, ang_major(1, 2) - 180], "N1-C2 "], // Bond with C2
-          [van_der_waals_radius(C), dist_major(1, 6), [0, ang_major(1, 6) - 180], "N1-C6 "]  // Bond with C6
+          // Bond with C2
+          [van_der_waals_radius(C), dist_major(1, 2), [0, ang_major(1, 2) - 180], "N1-C2 "],
+          // Bond with C6
+          [van_der_waals_radius(C), dist_major(1, 6), [0, ang_major(1, 6) - 180], "N1-C6 "]
         ],
         neighbors = [
-          [van_der_waals_radius(N), dist(1, 3, dn1n6), [0, 180 - ang(1, 2, an1n6)]] // Neighbor with N6
+          // Neighbor with N6
+          [van_der_waals_radius(N), dist(1, 3, dn1n6), [0, 180 - ang(1, 2, an1n6)]]
         ]
       );
     }
@@ -55,18 +68,33 @@ module adenine(atom = "") {
           atom_radius = van_der_waals_radius(C),
           color_name = cpk_color(C),
           bonds = [
-            [van_der_waals_radius(N), dist_major(2, 1), [0, ang_major(2, 1) - 180], "C2-N1 "], // Bond with N1
-            [van_der_waals_radius(N), dist_major(2, 3), [0, ang_major(2, 3) - 180], "C2-N3 "], // Bond with N3
-            [van_der_waals_radius(H), C_H_bond_sp2(), [0, ang_major(2, 3) + N1_C2_H - 180], "C2-H "] // Bond with H
+            // Bond with N1
+            [van_der_waals_radius(N), dist_major(2, 1), [0, ang_major(2, 1) - 180], "C2-N1 "],
+            // Bond with N3
+            [van_der_waals_radius(N), dist_major(2, 3), [0, ang_major(2, 3) - 180], "C2-N3 "],
+            // Bond with H
+            [van_der_waals_radius(H), C_H_bond_sp2(), [0, ang_major(2, 3) + N1_C2_H - 180], "C2-H "]
           ],
           neighbors = [
-            [van_der_waals_radius(C), dist_major(2, 4), [0, ang_major(2, 4) - 180]], // Neighbor with C4
-            [van_der_waals_radius(C), dist_major(2, 5), [0, ang_major(2, 6) - 180]], // Neighbor with C5
-            [van_der_waals_radius(C), dist_major(2, 6), [0, ang_major(2, 6) - 180]]  // Neighbor with C6
+            // Neighbor with C4
+            [van_der_waals_radius(C), dist_major(2, 4), [0, ang_major(2, 4) - 180]],
+            // Neighbor with C5
+            [van_der_waals_radius(C), dist_major(2, 5), [0, ang_major(2, 6) - 180]],
+            // Neighbor with C6
+            [van_der_waals_radius(C), dist_major(2, 6), [0, ang_major(2, 6) - 180]]
           ]
         );
       }
     }
+  }
+
+  module H2() {
+    space_filling_atom(
+      atom_radius = van_der_waals_radius(H),
+      color_name = cpk_color(H),
+      // Bond with C2
+      bond = [van_der_waals_radius(C), single_bond(H) + single_bond(C), "N-C2 "]
+    );
   }
 
   module N3() {
@@ -75,8 +103,10 @@ module adenine(atom = "") {
         atom_radius = van_der_waals_radius(N),
         color_name = cpk_color(N),
         bonds = [
-          [van_der_waals_radius(C), dist_major(3, 2), [0, ang_major(3, 2) - 180], "N3-C2 "], // Bond with C2
-          [van_der_waals_radius(C), dist_major(3, 4), [0, ang_major(3, 4) - 180], "N3-C4 "]  // Bond with C4
+          // Bond with C2
+          [van_der_waals_radius(C), dist_major(3, 2), [0, ang_major(3, 2) - 180], "N3-C2 "],
+          // Bond with C4
+          [van_der_waals_radius(C), dist_major(3, 4), [0, ang_major(3, 4) - 180], "N3-C4 "]
         ]
       );
     }
@@ -118,9 +148,12 @@ module adenine(atom = "") {
         atom_radius = van_der_waals_radius(C),
         color_name = cpk_color(C),
         bonds = [
-          [van_der_waals_radius(C), dist_major(5, 4), [0, ang_major(5, 4) - 180], "C5-C4 "], // Bond with C4
-          [van_der_waals_radius(C), dist_major(5, 6), [0, ang_major(5, 6) - 180], "C5-C6 "], // Bond with C6
-          [van_der_waals_radius(N), dist_minor(5, 7), [0, 360 - ang_minor(5, 4) - 180], "C5-N7 "] // Bond with N7
+          // Bond with C4
+          [van_der_waals_radius(C), dist_major(5, 4), [0, ang_major(5, 4) - 180], "C5-C4 "],
+          // Bond with C6
+          [van_der_waals_radius(C), dist_major(5, 6), [0, ang_major(5, 6) - 180], "C5-C6 "],
+          // Bond with N7
+          [van_der_waals_radius(N), dist_minor(5, 7), [0, 360 - ang_minor(5, 4) - 180], "C5-N7 "]
         ],
         neighbors = [
           // Neighbor with C8
@@ -139,20 +172,58 @@ module adenine(atom = "") {
           atom_radius = van_der_waals_radius(C),
           color_name = cpk_color(C),
           bonds = [
-            [van_der_waals_radius(N), dist_major(6, 1), [0, ang_major(6, 1) - 180], "C6-N1 "], // Bond with N1
-            [van_der_waals_radius(C), dist_major(6, 5), [0, ang_major(6, 5) - 180], "C6-C5 "], // Bond with C5
-            [van_der_waals_radius(N), C6_N6(), [0, ang_major(6, 1) + N1_C6_N6() - 180], "C6-N6 "] // Bond with N6
+            // Bond with N1
+            [van_der_waals_radius(N), dist_major(6, 1), [0, ang_major(6, 1) - 180], "C6-N1 "],
+            // Bond with C5
+            [van_der_waals_radius(C), dist_major(6, 5), [0, ang_major(6, 5) - 180], "C6-C5 "],
+            // Bond with N6
+            [van_der_waals_radius(N), C6_N6(), [0, ang_major(6, 1) + N1_C6_N6() - 180], "C6-N6 "]
 
           ],
           neighbors = [
-            [van_der_waals_radius(C), dist_major(6, 4), [0, ang_major(6, 4) - 180]], // Neighbors with C4
-            [van_der_waals_radius(C), dist_major(6, 2), [0, ang_major(6, 2) - 180]] // Neighbors with C2
+            // Neighbors with C4
+            [van_der_waals_radius(C), dist_major(6, 4), [0, ang_major(6, 4) - 180]],
+            // Neighbors with C2
+            [van_der_waals_radius(C), dist_major(6, 2), [0, ang_major(6, 2) - 180]]
           ]
         );
       }
     }
   }
 
+  module N6() {
+    // Azanide's have bond angles of 104.5 https://en.wikipedia.org/wiki/Azanide
+    azanide_angle = 104.5;
+    // get distances and angles related to N1-N6
+    dn1n6 = 3_gon_distances(C6_N1(), C6_N6(), N1_C6_N6());
+    an1n6 = 3_gon_angles(dn1n6, N1_C6_N6());
+    // get distances and angles related to C5-N6
+    dc5n6 = 3_gon_distances(C6_N6(), C5_C6(), 360 - N1_C6_N6() - C5_C6_N1());
+    ac5n6 = 3_gon_angles(dc5n6, 360 - N1_C6_N6() - C5_C6_N1());
+    rotate([0, -90, 0]) {
+      space_filling_atom(
+        atom_radius = van_der_waals_radius(N),
+        color_name = cpk_color(N),
+        bonds = [
+          // Bond with C6
+          [van_der_waals_radius(C), C6_N6(), [0, -180], "N6-C6 "],
+          // Bond with H6-1
+          [van_der_waals_radius(H), single_bond(H) + single_bond(N), [0, 180-(azanide_angle/2) - 180], "N6-H "],
+          // Bond with H6-2 
+          [van_der_waals_radius(H), single_bond(H) + single_bond(N), [0, 180+(azanide_angle/2) - 180], "N6-H "]
+        ]
+      );
+    }
+  }
+
+  module H6() {
+    space_filling_atom(
+      atom_radius = van_der_waals_radius(H),
+      color_name = cpk_color(H),
+      // Bond with N6
+      bond = [van_der_waals_radius(N), single_bond(H) + single_bond(N), "N-N6 "]
+    );
+  }
 
   // Bond length functions. These values were taken from
   // http://ndbserver.rutgers.edu/ndbmodule/archives/proj/valence/bases6.html
