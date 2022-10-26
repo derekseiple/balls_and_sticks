@@ -31,7 +31,9 @@ module adenine(atom = "") {
   else if (atom == "H6") { H6(); }
   else if (atom == "N7") { N7(); }
   else if (atom == "C8") { C8(); }
+  else if (atom == "H8") { H8(); }
   else if (atom == "N9") { N9(); }
+  else if (atom == "H9") { H9(); }
   else {
     assert(false, str("Unknown atom supplied for adenine: ", atom));
   }
@@ -221,7 +223,85 @@ module adenine(atom = "") {
       atom_radius = van_der_waals_radius(H),
       color_name = cpk_color(H),
       // Bond with N6
-      bond = [van_der_waals_radius(N), single_bond(H) + single_bond(N), "N-N6 "]
+      bond = [van_der_waals_radius(N), single_bond(H) + single_bond(N), "H-N6 "]
+    );
+  }
+
+  module N7() {
+    rotate([0, -90, 0]) {
+      space_filling_atom(
+        atom_radius = van_der_waals_radius(N),
+        color_name = cpk_color(N),
+        bonds = [
+          // Bond with C5
+          [van_der_waals_radius(C), dist_minor(7, 5), [0, ang_minor(7, 5) - 180], "N7-C5 "],
+          // Bond with C8
+          [van_der_waals_radius(C), dist_minor(7, 8), [0, ang_minor(7, 8) - 180], "N7-C8 "]
+        ]
+      );
+    }
+  }
+
+  module C8() {
+    N7_C8_H = (360 - ang_minor(8, 7)) / 2;
+    rotate([0, 90, 0]) {
+      rotate([0, 0, -(ang_minor(8, 7) + N7_C8_H - 180)]) {
+        space_filling_atom(
+          atom_radius = van_der_waals_radius(C),
+          color_name = cpk_color(C),
+          bonds = [
+            // Bond with N7
+            [van_der_waals_radius(N), dist_minor(8, 7), [0, ang_minor(8, 7) - 180], "C8-N7 "],
+            // Bond with N9
+            [van_der_waals_radius(N), dist_minor(8, 9), [0, ang_minor(8, 9) - 180], "C8-N9 "],
+            // Bond with H
+            [van_der_waals_radius(H), single_bond(H) + single_bond(C), [0, ang_minor(8, 7) + N7_C8_H - 180], "C8-H "]
+
+          ],
+          neighbors = [
+            // Neighbors with C4
+            [van_der_waals_radius(C), dist_minor(8, 4), [0, ang_minor(8, 4) - 180]],
+            // Neighbors with C5
+            [van_der_waals_radius(C), dist_minor(8, 5), [0, ang_minor(8, 5) - 180]]
+          ]
+        );
+      }
+    }
+  }
+
+  module H8() {
+    space_filling_atom(
+      atom_radius = van_der_waals_radius(H),
+      color_name = cpk_color(H),
+      // Bond with C8
+      bond = [van_der_waals_radius(C), single_bond(H) + single_bond(C), "H-C8 "]
+    );
+  }
+
+  module N9() {
+    C8_N9_H = (360 - ang_minor(9, 8)) / 2;
+    rotate([0, -90, 0]) {
+      space_filling_atom(
+        atom_radius = van_der_waals_radius(N),
+        color_name = cpk_color(N),
+        bonds = [
+          // Bond with C4
+          [van_der_waals_radius(C), dist_minor(9, 4), [0, ang_minor(9, 4) - 180], "N9-C4 "],
+          // Bond with C8
+          [van_der_waals_radius(C), dist_minor(9, 8), [0, ang_minor(9, 8) - 180], "N9-C8 "],
+          // Bond with H9
+          [van_der_waals_radius(H), single_bond(H) + single_bond(N), [0, ang_minor(9, 8) + C8_N9_H - 180], "N9-H "]
+        ]
+      );
+    }
+  }
+
+  module H9() {
+    space_filling_atom(
+      atom_radius = van_der_waals_radius(H),
+      color_name = cpk_color(H),
+      // Bond with C8
+      bond = [van_der_waals_radius(N), single_bond(H) + single_bond(N), "H-N9 "]
     );
   }
 
