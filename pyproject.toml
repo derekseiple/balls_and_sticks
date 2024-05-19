@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "balls and sticks"
+version = "1.0.0"
+description = "Utilities for generating 3D printable models of ball and stick molecular structures."
+authors = ["Derek Seiple <derekseiple@gmail.com>"]
+packages = [
+    { include = "src" }
+]
+
+[tool.poetry.dependencies]
+python = "~3.11"
+solidpython2 = "^2.1.0"
+jupyter = "^1.0"
+
+[tool.poetry.dev-dependencies]
+mypy = "^0.910"
+types-requests = "^2.27.14"
+flake8 = "^4.0.1"
+coverage = "^6.3.2"
+typing-extensions = "^4.1.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

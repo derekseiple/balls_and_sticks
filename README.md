@@ -20,3 +20,4 @@ The structure of this repo is as follows:
 * The [docs](./docs/README.md) section explains the details and decisions behind the design of the molecular models.
 * The [scad](./scad) directory contains the scripts and utilities that are used to generate the molecular models.
 * The [stls](./stls) directory contains generated STL files of the different designed components.
+
