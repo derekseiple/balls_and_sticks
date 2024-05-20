@@ -5,8 +5,8 @@
 # Licensed under Creative Commons BY-NC-SA 3.0. See license file.
 #
 
-from typing import List
-from solid2 import sphere, cube
+from typing import List, Optional
+from solid2 import sphere, cube, color
 from .element import Element
 from .neighbor import Neighbor
 from .bond import BondModel, NoBondModel
@@ -29,8 +29,9 @@ class AtomModelBuilder(object):
         distance: float,
         direction: Neighbor.Direction,
         bond: BondModel,
+        label: Optional[str] = None,
     ) -> 'AtomModelBuilder':
-        self._neighbors.append(Neighbor(element, distance, direction, bond))
+        self._neighbors.append(Neighbor(element, distance, direction, bond, label))
         return self
 
     def add_neighbor(
@@ -80,10 +81,9 @@ class AtomModel(object):
         """This method returns the space that needs to be removed from the atom in order to make room for the neighbor.
         """
         self_r = self._element.van_der_waals_radius
-        return (
-            cube(3 * self_r)
-            .down(self.__atom_interface_distance(neighbor.element, neighbor.distance))
-            .translate([-3 * self_r / 2, -3 * self_r / 2, -3 * self_r]))
+        neighbor_space = cube(3 * self_r).translate([-3 * self_r / 2, -3 * self_r / 2, -3 * self_r])
+        bond_space = neighbor.bond.model(neighbor.label)
+        return (neighbor_space + bond_space).down(self.__atom_interface_distance(neighbor.element, neighbor.distance))
 
     def model(self):
         """This method returns the 3D model of the atom. It does this by creating a sphere with the radius of the atom
@@ -93,7 +93,6 @@ class AtomModel(object):
         for neighbor in self._neighbors:
             # combine the neighbor space and bond space
             to_remove = self.__neighbor_space(neighbor)
-            to_remove += neighbor.bond.model()
             # rotate the portion to remove to the correct orientation then subtract it from the atom
             atom -= to_remove.rotate(0, -neighbor.direction.inclination, neighbor.direction.azimuthal)
-        return atom
+        return color(self._element.cpk_color)(atom)

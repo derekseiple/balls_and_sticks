@@ -46,7 +46,7 @@ class ElementProperties:
 
 class Element(ElementProperties, Enum):
     """Defines the specific elements of the periodic table."""
-    H = 1, 'H', 120*pm, 'while'
+    H = 1, 'H', 120*pm, 'white'
     He = 2, 'He', 140*pm, 'cyan'
     Li = 3, 'Li', 182*pm, 'violet'
     Be = 4, 'Be', 153*pm, 'darkgreen'
