@@ -5,7 +5,7 @@
 # Licensed under Creative Commons BY-NC-SA 3.0. See license file.
 #
 
-from solid2 import polygon, square, cylinder
+from solid2 import polygon, square, cylinder, cube
 from src.utils.constants import EPS
 
 
@@ -17,10 +17,10 @@ class SnapJoint:
 
     def __init__(
         self,
-        clearance: float = 0.5,  # space between the snap ring and the portion that holds it, like the atom.
-        lip: float = 0.75,       # defines the size of the "lip" in the snap ring.
-        radius: float = 3.25,    # allows us to control how large the snap ring is.
-        indent: float = 0.5,     # this defines how far inset from the bottom of the atom we position the snap joint.
+        clearance: float = 0.5,
+        lip: float = 0.75,
+        radius: float = 3.25,
+        indent: float = 0.5,
     ) -> None:
         """Constructor.
 
@@ -63,54 +63,43 @@ class SnapJoint:
     def snap_ring_model(self):
         """This method returns the snap ring model. This is the ring that snaps into the atoms' cavities to hold them
         together.
-        TODO:
-        rotate([0, 90, 0]) {
-          difference() {
-            copy_and_mirror([0, 0, 1]) {
-              difference() {
-                union() {
-                  rotate_extrude() {
-                    translate([radius - (clearance / 2), indent, 0]) {
-                      polygon(points = [
-                        [0, 0], [0 + lip, lip], [0 + lip, 2*lip], [0, 3*lip], [-2, 3*lip], [-2, 0]
-                      ]);
-                      translate([-2, -indent]) {
-                        square(size = [2, indent], center = false);
-                      }
-                    }
-                  };
-                  translate([0,0,0.5]) {
-                    cylinder(h = 1, r = 1.25, center = true);
-                  };
-                }
-                translate([0,0,1.75]) {
-                  cube(size = [3*radius, radius + lip - 2, radius + lip - 2], center = true);
-                }
-              }
-            };
-            translate([radius - (clearance / 2) - EPS, -3 * radius / 2, -3 * radius / 2]) {
-              cube(3 * radius);
-            }
-          }
-        }
-        }
         """
-        pass
+        # make the snap ring profile
+        half = polygon([
+            [0, 0],
+            [0 + self.lip, self.lip],
+            [0 + self.lip, 2 * self.lip],
+            [0, 3 * self.lip],
+            [-2, 3 * self.lip],
+            [-2, 0]])
+        half += square(2, self.indent, center=False).translate([-2, -self.indent])
+        half = half.translate([self.radius - (self.clearance / 2), self.indent, 0])
+        half = half.rotate_extrude()
+        half += cylinder(h=1, r=1.25, center=True).translate([0, 0, 0.5])
+        # make the notch to cut out of the atom
+        notch = cube(3 * self.radius, self.radius + self.lip - 2, self.radius + self.lip - 2 + EPS, center=True)
+        half -= notch.translate([0, 0, 1.75])
+        # Now mirror and copy the half to make the full snap ring
+        model = half + half.mirror([0, 0, 1])
+        # Make flat bottom for printing
+        bottom = cube(3 * self.radius)
+        model -= bottom.translate(self.radius - (self.clearance / 2) - EPS, -3 * self.radius / 2, -3 * self.radius / 2)
+        return model.rotate([0, 90, 0])
 
     def snap_receiver_model(self):
         """This model returns the space that the snap ring fits into. This is the portion of the atom that will be
         removed to make room for the snap ring."""
         model = polygon([
             [0, 0],
-            [self._lip, self._lip],
-            [self._lip, 2 * self._lip],
-            [-self._lip, 4 * self._lip],
-            [1, 4 * self._lip],
+            [self.lip, self.lip],
+            [self.lip, 2 * self.lip],
+            [-self.lip, 4 * self.lip],
+            [1, 4 * self.lip],
             [1, 0]])
-        model += square(1, self._indent).translate([0, -self._indent])
-        model = model.translate([self._radius + (self._clearance / 2), 0, 0])
+        model += square(1, self.indent).translate([0, -self.indent])
+        model = model.translate([self.radius + (self.clearance / 2), 0, 0])
         model = model.rotate_extrude()
 
-        r = self._radius + (self._clearance / 2) + self._lip
-        h = 4 * self._lip + self._indent - EPS
-        return cylinder(r=r, h=h).translate([0, 0, EPS / 2 - self._indent]) - model
+        r = self.radius + (self.clearance / 2) + self.lip
+        h = 4 * self.lip + self.indent - EPS
+        return cylinder(r=r, h=h).translate([0, 0, EPS / 2 - self.indent]) - model
