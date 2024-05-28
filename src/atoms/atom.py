@@ -59,6 +59,13 @@ class AtomModel(object):
         self._element = element
         self._neighbors = neighbors
 
+    @property
+    def element(self) -> Element:
+        return self._element
+
+    def clone(self) -> 'AtomModel':
+        return AtomModel(self._element, self._neighbors.copy())
+
     def __atom_interface_distance(
         self,
         mate: Element,
