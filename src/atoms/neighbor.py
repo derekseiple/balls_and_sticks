@@ -5,6 +5,7 @@
 # Licensed under Creative Commons BY-NC-SA 3.0. See license file.
 #
 
+from typing import Optional
 from .element import Element
 from .bond import BondModel
 
@@ -41,6 +42,7 @@ class Neighbor(object):
         distance: float,
         direction: Direction,
         bond: BondModel,
+        label: Optional[str] = None,
     ):
         if distance <= 0:
             raise ValueError("Distance must be greater than 0, but got: {}".format(distance))
@@ -48,6 +50,7 @@ class Neighbor(object):
         self._distance = distance
         self._direction = direction
         self._bond = bond
+        self._label = label
 
     @property
     def element(self) -> Element:
@@ -64,3 +67,7 @@ class Neighbor(object):
     @property
     def bond(self) -> BondModel:
         return self._bond
+
+    @property
+    def label(self) -> Optional[str]:
+        return self._label
