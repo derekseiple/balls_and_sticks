@@ -31,7 +31,7 @@ def water_molecule() -> MoleculeModel:
         .build())
 
     return (
-        MoleculeModelBuilder()
+        MoleculeModelBuilder('water')
         .add_atom(oxygen)
         .add_atom(hydrogen)
         .add_atom(hydrogen.clone())

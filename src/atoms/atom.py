@@ -102,4 +102,11 @@ class AtomModel(object):
             to_remove = self.__neighbor_space(neighbor)
             # rotate the portion to remove to the correct orientation then subtract it from the atom
             atom -= to_remove.rotate(0, -neighbor.direction.inclination, neighbor.direction.azimuthal)
+        # We want to make sure the atom rests on the x-y plane, so we will take the first neighbor and rotate/move the
+        # atom so that the neighbor is in the x-y plane.
+        if len(self._neighbors) > 0:
+            neighbor = self._neighbors[0]
+            if neighbor.direction.inclination > -90.0:
+                atom = atom.rotate(0, neighbor.direction.inclination, 0)
+            atom = atom.up(self.__atom_interface_distance(neighbor.element, neighbor.distance))
         return color(self._element.cpk_color)(atom)
