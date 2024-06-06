@@ -42,7 +42,7 @@ def arrange_prints(atoms: List[AtomModel]):
     for i, atom in enumerate(atoms):
         row, col = index_to_2d(i, side_len)
         model += atom.model().translate(row * delta, col * delta, 0)
-    
+
     return model
 
 
