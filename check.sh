@@ -9,7 +9,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 $DIR/install_flake8.sh
 
 # Install and setup poetry project
-$DIR/install_poetry.sh
+$DIR/install_poetry.sh 1.8.3
 poetry install --no-root
 
 # Linting...
