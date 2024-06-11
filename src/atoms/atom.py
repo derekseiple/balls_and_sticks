@@ -14,7 +14,9 @@ from .bond import BondModel, NoBondModel
 
 class AtomModelBuilder(object):
     """This is a builder class for the AtomModel class. It is used to build an AtomModel object by simply adding a
-    list of neighbor atoms along with the distances and orientations of those neighbors."""
+    list of neighbor atoms along with the distances and orientations of those neighbors. If the neighbor is too far away
+    to affect the shape of the atom, then it will not be added to the list of neighbors.
+    """
 
     def __init__(
         self,
@@ -22,6 +24,15 @@ class AtomModelBuilder(object):
     ):
         self._element = element
         self._neighbors: List[Neighbor] = []
+
+    def __neighbor_changes_atom(self, element: Element, distance: float) -> bool:
+        """This method determines if the neighbor will change the shape of the atom. If the distance is greater than the
+        sum of the van der Waals radii of the two atoms, then the neighbor will not change the shape of the atom, so it
+        doesn't need to be added to the list of neighbors.
+        """
+        self_r = self._element.van_der_waals_radius
+        mate_r = element.van_der_waals_radius
+        return distance < self_r + mate_r
 
     def add_bond(
         self,
@@ -31,7 +42,8 @@ class AtomModelBuilder(object):
         bond: BondModel,
         label: Optional[str] = None,
     ) -> 'AtomModelBuilder':
-        self._neighbors.append(Neighbor(element, distance, direction, bond, label))
+        if self.__neighbor_changes_atom(element, distance):
+            self._neighbors.append(Neighbor(element, distance, direction, bond, label))
         return self
 
     def add_neighbor(
@@ -40,7 +52,8 @@ class AtomModelBuilder(object):
         distance: float,
         direction: Neighbor.Direction,
     ) -> 'AtomModelBuilder':
-        self._neighbors.append(Neighbor(element, distance, direction, NoBondModel()))
+        if self.__neighbor_changes_atom(element, distance):
+            self._neighbors.append(Neighbor(element, distance, direction, NoBondModel()))
         return self
 
     def build(self) -> 'AtomModel':
