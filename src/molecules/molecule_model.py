@@ -1,5 +1,5 @@
 #
-# molecule.py
+# molecule_model.py
 #
 # Copyright © 2024 Derek Seiple
 # Licensed under Creative Commons BY-NC-SA 3.0. See license file.
@@ -7,7 +7,7 @@
 
 from typing import List, Dict
 from src.atoms.element import Element
-from src.atoms.atom import AtomModel
+from src.atoms.atom_model import AtomModel
 import collections
 
 

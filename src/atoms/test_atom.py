@@ -6,9 +6,9 @@
 #
 
 import unittest
-from .atom import AtomModelBuilder
-from .element import Element
-from .neighbor import Neighbor
+from src.atoms.atom_model import AtomModelBuilder
+from src.atoms.element import Element
+from src.atoms.neighbor import Neighbor
 from src.utils.constants import pm
 
 

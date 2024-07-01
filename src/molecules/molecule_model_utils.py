@@ -5,9 +5,9 @@
 # Licensed under Creative Commons BY-NC-SA 3.0. See license file.
 #
 
-from src.atoms.atom import AtomModelBuilder
+from src.atoms.atom_model import AtomModelBuilder
 from src.atoms.neighbor import Neighbor
-from src.molecules.molecule import MoleculeModel, MoleculeModelBuilder
+from src.molecules.molecule_model import MoleculeModel, MoleculeModelBuilder
 from src.molecules.molecule_positions import MoleculePositions
 
 
