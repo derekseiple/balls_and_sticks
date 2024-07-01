@@ -57,3 +57,37 @@ class TestPoint(unittest.TestCase):
         p7 = p1.rotate_degrees(-45.0)
         self.assertAlmostEqual(p7.x, sqrt(2) / 2)
         self.assertAlmostEqual(p7.y, -sqrt(2) / 2)
+
+    def test_inclination_and_azimuthal(self):
+        one_over_root2 = 1 / 2 ** 0.5
+        p = Point(one_over_root2, one_over_root2, 1.0)
+        self.assertAlmostEqual(p.get_inclination_angle(), 45.0)
+        self.assertAlmostEqual(p.get_azimuthal_angle(), 45.0)
+
+        p = Point(one_over_root2, one_over_root2, -1.0)
+        self.assertAlmostEqual(p.get_inclination_angle(), -45.0)
+        self.assertAlmostEqual(p.get_azimuthal_angle(), 45.0)
+
+        p = Point(one_over_root2, -one_over_root2, 1.0)
+        self.assertAlmostEqual(p.get_inclination_angle(), 45.0)
+        self.assertAlmostEqual(p.get_azimuthal_angle(), -45.0)
+
+        p = Point(one_over_root2, -one_over_root2, -1.0)
+        self.assertAlmostEqual(p.get_inclination_angle(), -45.0)
+        self.assertAlmostEqual(p.get_azimuthal_angle(), -45.0)
+
+        p = Point(-one_over_root2, one_over_root2, 1.0)
+        self.assertAlmostEqual(p.get_inclination_angle(), 45.0)
+        self.assertAlmostEqual(p.get_azimuthal_angle(), 135.0)
+
+        p = Point(-one_over_root2, one_over_root2, -1.0)
+        self.assertAlmostEqual(p.get_inclination_angle(), -45.0)
+        self.assertAlmostEqual(p.get_azimuthal_angle(), 135.0)
+
+        p = Point(-one_over_root2, -one_over_root2, 1.0)
+        self.assertAlmostEqual(p.get_inclination_angle(), 45.0)
+        self.assertAlmostEqual(p.get_azimuthal_angle(), -135.0)
+
+        p = Point(-one_over_root2, -one_over_root2, -1.0)
+        self.assertAlmostEqual(p.get_inclination_angle(), -45.0)
+        self.assertAlmostEqual(p.get_azimuthal_angle(), -135.0)

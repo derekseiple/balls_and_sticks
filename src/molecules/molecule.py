@@ -31,8 +31,9 @@ class MoleculeModelBuilder(object):
 
 
 class MoleculeModel(object):
-    """This is a class that represents the model of a molecule. It is holds all of the information about the atom models
+    """This is a class that represents the model of a molecule. It holds all of the information about the atom models
     in the molecule. This is then used to generate the 3D model of the molecule by calling the atoms() method.
+
     Note: This does not generate the full 3D model of the molecule itself, but rather the 3D models of the individual
     atoms which, when assembled, will form the 3D model of the molecule."""
     def __init__(

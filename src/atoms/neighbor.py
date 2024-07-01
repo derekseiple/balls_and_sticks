@@ -7,7 +7,6 @@
 
 from typing import Optional
 from .element import Element
-from .bond import BondModel
 
 
 class Neighbor(object):
@@ -29,8 +28,7 @@ class Neighbor(object):
 
         @property
         def inclination(self) -> float:
-            # TODO Comment on why we add 90 degrees
-            return self._inclination + 90.0
+            return self._inclination
 
         @property
         def azimuthal(self) -> float:
@@ -41,33 +39,33 @@ class Neighbor(object):
         element: Element,
         distance: float,
         direction: Direction,
-        bond: BondModel,
+        bond_order: int,
         label: Optional[str] = None,
     ):
         if distance <= 0:
             raise ValueError("Distance must be greater than 0, but got: {}".format(distance))
-        self._element = element
-        self._distance = distance
-        self._direction = direction
-        self._bond = bond
-        self._label = label
+        self.__element = element
+        self.__distance = distance
+        self.__direction = direction
+        self.__bond_order = bond_order
+        self.__label = label
 
     @property
     def element(self) -> Element:
-        return self._element
+        return self.__element
 
     @property
     def distance(self) -> float:
-        return self._distance
+        return self.__distance
 
     @property
     def direction(self) -> Direction:
-        return self._direction
+        return self.__direction
 
     @property
-    def bond(self) -> BondModel:
-        return self._bond
+    def bond_order(self) -> int:
+        return self.__bond_order
 
     @property
     def label(self) -> Optional[str]:
-        return self._label
+        return self.__label

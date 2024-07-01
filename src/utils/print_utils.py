@@ -41,7 +41,7 @@ def arrange_prints(atoms: List[AtomModel]):
     model = cube(0)
     for i, atom in enumerate(atoms):
         row, col = index_to_2d(i, side_len)
-        model += atom.model().translate(row * delta, col * delta, 0)
+        model += atom.print().translate(row * delta, col * delta, 0)
 
     return model
 

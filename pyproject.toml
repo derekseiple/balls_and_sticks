@@ -13,11 +13,12 @@ solidpython2 = "^2.1.0"
 jupyter = "^1.0"
 
 [tool.poetry.dev-dependencies]
-mypy = "^0.910"
+mypy = "^1.10.0"
 types-requests = "^2.27.14"
 flake8 = "^4.0.1"
 coverage = "^6.3.2"
 typing-extensions = "^4.1.1"
+numpy = "^1.22.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

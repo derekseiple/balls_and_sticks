@@ -17,7 +17,7 @@ class ConvexPolygonBuilder:
     distance and an angle. The angle given is the angle formed by the last two vertices and the new vertex.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.__vertices: List[Point] = [Point(0.0, 0.0)]
 
     def __add_first_vertex(self, distance: float) -> None:
@@ -100,3 +100,15 @@ class Polygon:
 
     def vertex(self, index: int):
         return self.__vertices[index]
+
+    def translate(self, point: Point) -> 'Polygon':
+        """Translate the polygon by the given point."""
+        return Polygon([vertex + point for vertex in self.__vertices])
+
+    def rotate_radians(self, angle: float) -> 'Polygon':
+        """Rotates the polygon by the given angle about the origin."""
+        return Polygon([vertex.rotate_radians(angle) for vertex in self.__vertices])
+
+    def rotate_degrees(self, angle: float) -> 'Polygon':
+        """Rotates the polygon by the given angle about the origin."""
+        return Polygon([vertex.rotate_degrees(angle) for vertex in self.__vertices])

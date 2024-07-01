@@ -1,0 +1,43 @@
+#
+# adenine.py
+#
+# Copyright © 2024 Derek Seiple
+# Licensed under Creative Commons BY-NC-SA 3.0. See license file.
+#
+
+from src.atoms.element import Element
+from src.atoms.atom_position import AtomPosition
+from src.utils.point import Point
+from src.molecules.molecule_positions import MoleculePositions
+
+
+class AzanidePositions(MoleculePositions):
+    """This is a class that represents the positions of the atoms in an azanide https://en.wikipedia.org/wiki/Azanide
+    in 3D space. It holds the element types and positions.
+
+    This will construct the molecule with the N atom at the origin, and the H placed symmetrically above and below the
+    positive x-axis according to the bond angle. The bond angle is set to 104.5 degrees by default.
+    """
+
+    def __init__(
+        self,
+        bond_angle: float = 104.5,
+    ) -> None:
+        """We put the order of the atoms for the MoleculePositions as [N, H1, H2]."""
+        bond_distance = Element.N.single_bond_radius + Element.H.single_bond_radius
+        super().__init__([
+            AtomPosition(Element.N, Point(0, 0)),
+            AtomPosition(Element.H, Point.construct_from_polar(bond_distance, bond_angle / 2)),
+            AtomPosition(Element.H, Point.construct_from_polar(bond_distance, -bond_angle / 2))])
+
+    @property
+    def N(self) -> AtomPosition:
+        return self.atoms[0]
+
+    @property
+    def H1(self) -> AtomPosition:
+        return self.atoms[1]
+
+    @property
+    def H2(self) -> AtomPosition:
+        return self.atoms[2]

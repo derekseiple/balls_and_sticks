@@ -64,3 +64,36 @@ class SingleBondModel(BondModel):
                 revolve_text(1.25 * snap.radius, 4, label + ' ' + label + ' ').mirror(0, 1, 0)
             ).translate(0, 0, -0.5)
         return model
+
+
+class FixedBondModel(BondModel):
+
+    def __init__(self) -> None:
+        pass
+
+    def model(
+        self,
+        label: Optional[str]
+    ):
+        # TODO: Implement the FixedBondModel and pick an appropriate text radius
+        text_radius = 3.25
+        model = cube(0)
+        if label is not None:
+            model += linear_extrude(1)(
+                revolve_text(1.25 * text_radius, 4, label + ' ' + label + ' ').mirror(0, 1, 0)
+            ).translate(0, 0, -0.5)
+        return model
+
+
+def bond_model_from_order(bond_order: int) -> BondModel:
+    """This function will return the bond model that corresponds to the given bond order. This allows us to easily
+    switch between bond models based on the bond order.
+    """
+    if bond_order == 0:
+        return NoBondModel()
+    elif bond_order == 1:
+        return SingleBondModel()
+    elif bond_order in [2, 3]:
+        return FixedBondModel()
+    else:
+        raise ValueError("The bond order must be between 0 and 3.")
