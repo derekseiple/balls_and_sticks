@@ -8,9 +8,9 @@
 
 from math import sqrt, ceil
 from typing import List
-from src.atoms.atom import AtomModel
+from src.atoms.atom_model import AtomModel
 from solid2 import cube
-from src.molecules.molecule import MoleculeModel
+from src.molecules.molecule_model import MoleculeModel
 
 
 def index_to_2d(index, num_columns):

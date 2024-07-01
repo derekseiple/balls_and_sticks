@@ -1,5 +1,5 @@
 #
-# atom.py
+# atom_position.py
 #
 # Copyright © 2024 Derek Seiple
 # Licensed under Creative Commons BY-NC-SA 3.0. See license file.
