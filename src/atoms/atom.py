@@ -9,7 +9,7 @@ from typing import List, Optional
 from solid2 import sphere, cube, color
 from .element import Element
 from .neighbor import Neighbor
-from .bond import BondModel, NoBondModel
+from src.atoms.bond import bond_model_from_order
 
 
 class AtomModelBuilder(object):
@@ -39,11 +39,11 @@ class AtomModelBuilder(object):
         element: Element,
         distance: float,
         direction: Neighbor.Direction,
-        bond: BondModel,
+        bond_order: int,
         label: Optional[str] = None,
     ) -> 'AtomModelBuilder':
         if self.__neighbor_changes_atom(element, distance):
-            self._neighbors.append(Neighbor(element, distance, direction, bond, label))
+            self._neighbors.append(Neighbor(element, distance, direction, bond_order, label))
         return self
 
     def add_neighbor(
@@ -53,7 +53,7 @@ class AtomModelBuilder(object):
         direction: Neighbor.Direction,
     ) -> 'AtomModelBuilder':
         if self.__neighbor_changes_atom(element, distance):
-            self._neighbors.append(Neighbor(element, distance, direction, NoBondModel()))
+            self._neighbors.append(Neighbor(element, distance, direction, 0))
         return self
 
     def build(self) -> 'AtomModel':
@@ -94,6 +94,28 @@ class AtomModel(object):
         mate_r = mate.van_der_waals_radius
         return ((self_r + mate_r)*(self_r - mate_r) + distance * distance) / (2 * distance)
 
+    def __atom_interface_radius(
+        self,
+        mate: Element,
+        distance: float,
+    ):
+        """Given the atomic radii of two atoms (Generally the Van der Waals radius
+        https://en.wikipedia.org/wiki/Van_der_Waals_radius) and the distance between the atoms when bonded, this
+        computes the radius of the circle formed by the intersection of the two atoms. We use this as a gauge for which
+        bonds form the largest surface area between the two atoms, which will make for a good base to print from.
+        """
+        self_r = self._element.van_der_waals_radius
+        mate_r = mate.van_der_waals_radius
+        # This uses the stable formula for huron's method to compute the area of a triangle given the three sides.
+        # https://en.wikipedia.org/wiki/Heron%27s_formula#Numerical_stability
+        sides = [self_r, mate_r, distance]
+        sides.sort(reverse=True)
+        a = sides[0]
+        b = sides[1]
+        c = sides[2]
+        area = 0.25 * ((a + (b + c)) * (c - (a - b)) * (c + (a - b)) * (a + (b - c))) ** 0.5
+        return distance / area / 2
+
     def __neighbor_space(
         self,
         neighbor: Neighbor,
@@ -102,8 +124,10 @@ class AtomModel(object):
         """
         self_r = self._element.van_der_waals_radius
         neighbor_space = cube(3 * self_r).translate([-3 * self_r / 2, -3 * self_r / 2, -3 * self_r])
-        bond_space = neighbor.bond.model(neighbor.label)
-        return (neighbor_space + bond_space).down(self.__atom_interface_distance(neighbor.element, neighbor.distance))
+        bond_space = bond_model_from_order(neighbor.bond_order)
+        total_space = neighbor_space + bond_space.model(neighbor.label)
+        total_space = total_space.down(self.__atom_interface_distance(neighbor.element, neighbor.distance))
+        return total_space.rotate(0, -90, 0)
 
     def model(self):
         """This method returns the 3D model of the atom. It does this by creating a sphere with the radius of the atom
@@ -114,12 +138,32 @@ class AtomModel(object):
             # combine the neighbor space and bond space
             to_remove = self.__neighbor_space(neighbor)
             # rotate the portion to remove to the correct orientation then subtract it from the atom
-            atom -= to_remove.rotate(0, -neighbor.direction.inclination, neighbor.direction.azimuthal)
-        # We want to make sure the atom rests on the x-y plane, so we will take the first neighbor and rotate/move the
-        # atom so that the neighbor is in the x-y plane.
-        if len(self._neighbors) > 0:
-            neighbor = self._neighbors[0]
-            if neighbor.direction.inclination > -90.0:
-                atom = atom.rotate(0, neighbor.direction.inclination, 0)
-            atom = atom.up(self.__atom_interface_distance(neighbor.element, neighbor.distance))
+            to_remove = to_remove.rotate(0, -neighbor.direction.inclination, 0)
+            to_remove = to_remove.rotate(0, 0, neighbor.direction.azimuthal)
+            atom -= to_remove
         return color(self._element.cpk_color)(atom)
+
+    def print(self):
+        """This takes the model (from model() call above) and orientates it so that the largest surface area is on the
+        x-y plane.
+        """
+        print("Printing atom: {} With {} neighbors:".format(self._element.name, len(self._neighbors)))
+        for neighbor in self._neighbors:
+            print("  Neighbor: {} with interface radius: {} with bond order: {}".format(
+                neighbor.element.name, self.__atom_interface_radius(neighbor.element, neighbor.distance),
+                neighbor.bond_order))
+        atom = self.model()
+        # We want to make sure we have a flat surface to print from, so we want to find the largest surface area formed
+        # by the intersection of the atom and its neighbors. We will then rotate/move the atom so that surface is on the
+        # x-y plane. But there can be many neighbors, so really we want to limit our search to neighbors that are
+        # actually bonded to the atom. So if the bond order is 0, then we make the radius 0 so it doesn't get picked.
+        if len(self._neighbors) > 0:
+            radii = [
+                self.__atom_interface_radius(neighbor.element, neighbor.distance) if neighbor.bond_order > 0 else 0
+                for neighbor in self._neighbors]
+            neighbor = self._neighbors[radii.index(max(radii))]
+            atom = atom.rotate(0, 0, -neighbor.direction.azimuthal)
+            atom = atom.rotate(0, neighbor.direction.inclination, 0)
+            atom = atom.rotate(0, 90, 0)
+            atom = atom.up(self.__atom_interface_distance(neighbor.element, neighbor.distance))
+        return atom
