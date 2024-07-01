@@ -5,17 +5,31 @@
 # Licensed under Creative Commons BY-NC-SA 3.0. See license file.
 #
 
-# import unittest
-# from src.examples.water import water_molecule
+import unittest
+from src.molecules.molecule_representation import MoleculeRepresentation
+from src.examples.water import WaterPositions
+from tempfile import NamedTemporaryFile
+from src.molecules.molecule_model_utils import molecule_model_from_positions
 
 
-# class TestWaterModel(unittest.TestCase):
-#     def test_model_runs(self):
-#         water = water_molecule()
-#         # make sure we can generate the model for each atom in the molecule
-#         for atom in water.atoms():
-#             atom.model()
-#         # Now do the same but loop through with each element
-#         for element in water.elements:
-#             for atom in water.element_atoms(element):
-#                 atom.model()
+class TestWaterModel(unittest.TestCase):
+
+    def test_works(self):
+        """We test to make sure the water molecule can be represented and model files generated."""
+        positions = WaterPositions.create_from_pubchem()
+
+        # We expect to have 3 atoms in the adenine molecule.
+        self.assertEqual(3, len(positions.atoms))
+
+        # Test that we can generate the model file representation.
+        with NamedTemporaryFile() as scad_file:
+            rep = MoleculeRepresentation(positions)
+            model = rep.model()
+            model.save_as_scad(scad_file.name)
+
+        # Test that we have the atoms we expect and can generate the model files for the prints.
+        molecule = molecule_model_from_positions("adenine", positions)
+
+        for atom in molecule.atoms():
+            with NamedTemporaryFile() as scad_file:
+                atom.model().save_as_scad(scad_file.name)

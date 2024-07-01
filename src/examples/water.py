@@ -15,8 +15,7 @@ import numpy as np
 
 
 class WaterPositions(MoleculePositions):
-    """
-    """
+    """This class represents the locations of the atoms in a water molecule."""
 
     def __init__(
         self,
@@ -24,13 +23,12 @@ class WaterPositions(MoleculePositions):
         bond_orders: np.ndarray,
         labels: Optional[List[str]] = None
     ) -> None:
-        """
-        """
         super().__init__(atoms, bond_orders, labels)
 
     @staticmethod
     def create_from_pubchem() -> 'WaterPositions':
-        """
+        """This function will create a WaterPositions object from the PubChem Conformer data located in the data
+        directory. It will return the object with the atom positions set.
         """
         path = Path(__file__).resolve().parent.parent / 'data/pubchem/water.json'
         with open(path) as f:
