@@ -161,10 +161,7 @@ class AtomModel(object):
             radii = [
                 self.__atom_interface_radius(neighbor.element, neighbor.distance) if neighbor.bond_order > 0 else 0
                 for neighbor in self._neighbors]
-            print("  Radii: {}".format(radii))
-            print("  Max index: {}".format(radii.index(max(radii))))
             neighbor = self._neighbors[radii.index(max(radii))]
-            print("  Neighbor chose: {} with with bond order: {}".format(neighbor.element.name, neighbor.bond_order))
             atom = atom.rotate(0, 0, -neighbor.direction.azimuthal)
             atom = atom.rotate(0, neighbor.direction.inclination, 0)
             atom = atom.rotate(0, 90, 0)
