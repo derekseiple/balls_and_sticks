@@ -9,6 +9,9 @@ from src.atoms.atom_model import AtomModelBuilder
 from src.atoms.neighbor import Neighbor
 from src.molecules.molecule_model import MoleculeModel, MoleculeModelBuilder
 from src.molecules.molecule_positions import MoleculePositions
+from src.molecules.molecule_position_utils import molecule_position_from_pubchem
+from pathlib import Path
+import json
 
 
 def molecule_model_from_positions(name: str, positions: MoleculePositions) -> MoleculeModel:
@@ -49,3 +52,13 @@ def molecule_model_from_positions(name: str, positions: MoleculePositions) -> Mo
         molecule.add_atom(atom.build())
 
     return molecule.build()
+
+
+def molecule_model_from_pubchem(name: str, pubchem: Path) -> MoleculeModel:
+    """This function is similar to molecule_model_from_positions, but it will use the PubChem API to get the molecule
+    positions instead of requiring a MoleculePositions object. This is useful for molecules that do not need to be altered in any way from
+    """
+    with open(pubchem) as f:
+        parsed_json = json.load(f)
+    positions = molecule_position_from_pubchem(parsed_json)
+    return molecule_model_from_positions(name, positions)
