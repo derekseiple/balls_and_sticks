@@ -12,8 +12,8 @@ from src.molecules.molecule_positions import MoleculePositions
 
 
 def molecule_model_from_positions(name: str, positions: MoleculePositions) -> MoleculeModel:
-    """This function will use the given AdeninePositions object to create a MoleculeModel object that represents the
-    adenine molecule when printed out.
+    """This function will use the given MoleculePositions object to create a MoleculeModel object that represents the
+    molecule when printed out.
     """
     # While not the most efficient way, we will just loop through all of the atoms in the molecule adding each one as a
     # neighbor or bond and relying on AtomModel to only use the relevant ones.

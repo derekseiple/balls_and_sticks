@@ -30,7 +30,3 @@ class AtomPosition(object):
 
     def translate(self, point: Point) -> None:
         self._position += point
-
-    def rotate_degrees(self, angle: float) -> None:
-        # TODO: fix for 3D
-        self._position = self._position.rotate_degrees(angle)

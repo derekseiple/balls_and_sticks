@@ -6,7 +6,6 @@
 #
 
 from typing import List, Optional
-from src.utils.point import Point
 from src.atoms.atom_position import AtomPosition
 from src.utils.echeck import echeck
 import numpy as np
@@ -46,14 +45,6 @@ class MoleculePositions(object):
     @property
     def labels(self) -> Optional[List[str]]:
         return self._labels
-
-    def translate(self, point: Point) -> None:
-        for atom in self._atoms:
-            atom.translate(point)
-
-    def rotate_degrees(self, angle: float) -> None:
-        for atom in self._atoms:
-            atom.rotate_degrees(angle)
 
     def __iter__(self):
         return iter(self._atoms)
