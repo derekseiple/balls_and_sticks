@@ -57,13 +57,13 @@ def arrange_atoms(atoms: List[AtomModel]):
 def arrange_snap_joints(n_snap: int):
     """Arrange a list of snap joints into a grid so that they are not overlapping and are not too far apart.
     """
-    return arrange_parts([SnapJoint().ring_model() for _ in range(n_snap)], 10)
+    return arrange_parts([SnapJoint().ring_model() for _ in range(n_snap)], 6)
 
 
 def arrange_glue_joints(n_glue: int):
     """Arrange a list of glue joints into a grid so that they are not overlapping and are not too far apart.
     """
-    return arrange_parts([GlueJoint().ring_model() for _ in range(n_glue)], 10)
+    return arrange_parts([GlueJoint().ring_model() for _ in range(n_glue)], 6)
 
 
 def snap_joint_count(molecule: MoleculeModel) -> int:
