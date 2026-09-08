@@ -5,7 +5,7 @@
 # Licensed under Creative Commons BY-NC-SA 3.0. See license file.
 #
 
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from solid2 import sphere, cube, color
 from .element import Element
 from .neighbor import Neighbor
@@ -76,6 +76,10 @@ class AtomModel(object):
     def element(self) -> Element:
         return self._element
 
+    @property
+    def neighbors(self) -> List[Neighbor]:
+        return self._neighbors
+
     def clone(self) -> 'AtomModel':
         return AtomModel(self._element, self._neighbors.copy())
 
@@ -114,20 +118,44 @@ class AtomModel(object):
         b = sides[1]
         c = sides[2]
         area = 0.25 * ((a + (b + c)) * (c - (a - b)) * (c + (a - b)) * (a + (b - c))) ** 0.5
-        return distance / area / 2
+        # The intersection radius is the height of that triangle measured from the side joining the two centers.
+        return 2 * area / distance
+
+    @staticmethod
+    def _bond_frame_rotations(direction: Neighbor.Direction) -> List[Tuple[float, float, float]]:
+        """The rotations, applied in the order given, that carry the space built by __neighbor_space into place on the
+        atom. In that local frame the neighbor lies along -z and the key of the bond joint points along +x.
+
+        These rotations only set the inclination and azimuthal angles of the bond and never roll about the bond itself,
+        which means the local +x axis lands so that it has the maximum z-component of the direction to the neighbor.
+        Both atoms of a bond compute the same vector so the joint keys of the two atoms meet.
+
+        A bond pointing straight up or down has no unique maximum z-component, so we pick one: both keys point along
+        world +x. The azimuthal angle of a vertical direction is undefined, so it is ignored, and the atom whose
+        neighbor is straight up is rolled 180° to bring its key onto +x as well.
+        """
+        azimuthal = direction.azimuthal
+        roll: List[Tuple[float, float, float]] = []
+        if abs(direction.inclination) == 90.0:
+            azimuthal = 0.0
+            if direction.inclination == 90.0:
+                roll = [(0.0, 0.0, 180.0)]
+        return roll + [(0.0, -90.0, 0.0), (0.0, -direction.inclination, 0.0), (0.0, 0.0, azimuthal)]
 
     def __neighbor_space(
         self,
         neighbor: Neighbor,
     ):
         """This method returns the space that needs to be removed from the atom in order to make room for the neighbor.
+        It is built in the local frame of the bond, so it still has to be rotated by _bond_frame_rotations to point at
+        the neighbor.
         """
         self_r = self._element.van_der_waals_radius
         neighbor_space = cube(3 * self_r).translate([-3 * self_r / 2, -3 * self_r / 2, -3 * self_r])
-        bond_space = bond_model_from_order(neighbor.bond_order)
+        max_label_radius = self.__atom_interface_radius(neighbor.element, neighbor.distance)
+        bond_space = bond_model_from_order(neighbor.bond_order, max_label_radius)
         total_space = neighbor_space + bond_space.model(neighbor.label)
-        total_space = total_space.down(self.__atom_interface_distance(neighbor.element, neighbor.distance))
-        return total_space.rotate(0, -90, 0)
+        return total_space.down(self.__atom_interface_distance(neighbor.element, neighbor.distance))
 
     def model(self):
         """This method returns the 3D model of the atom. It does this by creating a sphere with the radius of the atom
@@ -138,8 +166,8 @@ class AtomModel(object):
             # combine the neighbor space and bond space
             to_remove = self.__neighbor_space(neighbor)
             # rotate the portion to remove to the correct orientation then subtract it from the atom
-            to_remove = to_remove.rotate(0, -neighbor.direction.inclination, 0)
-            to_remove = to_remove.rotate(0, 0, neighbor.direction.azimuthal)
+            for angles in self._bond_frame_rotations(neighbor.direction):
+                to_remove = to_remove.rotate(*angles)
             atom -= to_remove
         return color(self._element.cpk_color)(atom)
 
@@ -147,11 +175,6 @@ class AtomModel(object):
         """This takes the model (from model() call above) and orientates it so that the largest surface area is on the
         x-y plane.
         """
-        print("Printing atom: {} With {} neighbors:".format(self._element.name, len(self._neighbors)))
-        for neighbor in self._neighbors:
-            print("  Neighbor: {} with interface radius: {} with bond order: {}".format(
-                neighbor.element.name, self.__atom_interface_radius(neighbor.element, neighbor.distance),
-                neighbor.bond_order))
         atom = self.model()
         # We want to make sure we have a flat surface to print from, so we want to find the largest surface area formed
         # by the intersection of the atom and its neighbors. We will then rotate/move the atom so that surface is on the

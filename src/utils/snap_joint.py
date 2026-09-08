@@ -60,7 +60,7 @@ class SnapJoint:
     def indent(self) -> float:
         return self._indent
 
-    def snap_ring_model(self):
+    def ring_model(self):
         """This method returns the snap ring model. This is the ring that snaps into the atoms' cavities to hold them
         together.
         """
@@ -86,7 +86,7 @@ class SnapJoint:
         model -= bottom.translate(self.radius - (self.clearance / 2) - EPS, -3 * self.radius / 2, -3 * self.radius / 2)
         return model.rotate([0, 90, 0])
 
-    def snap_receiver_model(self):
+    def receiver_model(self):
         """This model returns the space that the snap ring fits into. This is the portion of the atom that will be
         removed to make room for the snap ring."""
         model = polygon([

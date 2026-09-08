@@ -14,8 +14,10 @@ import collections
 class MoleculeModelBuilder(object):
     """This is a builder class for the MoleculeModel class. It is used to build a MoleculeModel object by adding the
     atoms to the molecule. This is done by using the add_atom method."""
+
     def __init__(self, name: str):
         self._name = name
+        self._bond_counts: List[int] = []
         self._atoms: Dict[Element, List[AtomModel]] = collections.defaultdict(list)
 
     def add_atom(
@@ -27,7 +29,7 @@ class MoleculeModelBuilder(object):
         return self
 
     def build(self) -> 'MoleculeModel':
-        return MoleculeModel(self._name, self._atoms)
+        return MoleculeModel(self._name, self._bond_counts, self._atoms)
 
 
 class MoleculeModel(object):
@@ -36,12 +38,15 @@ class MoleculeModel(object):
 
     Note: This does not generate the full 3D model of the molecule itself, but rather the 3D models of the individual
     atoms which, when assembled, will form the 3D model of the molecule."""
+
     def __init__(
         self,
         name: str,
+        bond_counts: List[int],
         atoms: Dict[Element, List[AtomModel]],
     ):
         self._name = name
+        self._bond_counts: List[int] = bond_counts
         self._atoms: Dict[Element, List[AtomModel]] = atoms
 
     @property
