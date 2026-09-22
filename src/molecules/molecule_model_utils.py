@@ -6,8 +6,8 @@
 #
 
 from src.atoms.atom_model import AtomModelBuilder
-from src.atoms.neighbor import Neighbor
 from src.molecules.molecule_model import MoleculeModel, MoleculeModelBuilder
+from src.utils.direction import Direction
 from src.molecules.molecule_positions import MoleculePositions
 from src.molecules.molecule_position_utils import molecule_position_from_pubchem
 from pathlib import Path
@@ -39,7 +39,7 @@ def molecule_model_from_positions(name: str, positions: MoleculePositions) -> Mo
                 atom.add_bond(
                     positions.atoms[bond_idx].element,
                     positions.atoms[atom_idx].position.distance(positions.atoms[bond_idx].position),
-                    Neighbor.Direction(direction.get_inclination_angle(), direction.get_azimuthal_angle()),
+                    Direction(direction.get_inclination_angle(), direction.get_azimuthal_angle()),
                     positions.bond_orders[atom_idx][bond_idx],
                     label)
             else:
@@ -47,7 +47,7 @@ def molecule_model_from_positions(name: str, positions: MoleculePositions) -> Mo
                 atom.add_neighbor(
                     positions.atoms[bond_idx].element,
                     positions.atoms[atom_idx].position.distance(positions.atoms[bond_idx].position),
-                    Neighbor.Direction(direction.get_inclination_angle(), direction.get_azimuthal_angle()))
+                    Direction(direction.get_inclination_angle(), direction.get_azimuthal_angle()))
 
         molecule.add_atom(atom.build())
 
@@ -56,7 +56,8 @@ def molecule_model_from_positions(name: str, positions: MoleculePositions) -> Mo
 
 def molecule_model_from_pubchem(name: str, pubchem: Path) -> MoleculeModel:
     """This function is similar to molecule_model_from_positions, but it will use the PubChem API to get the molecule
-    positions instead of requiring a MoleculePositions object. This is useful for molecules that do not need to be altered in any way from
+    positions instead of requiring a MoleculePositions object. This is useful for molecules that do not need to be
+    altered in any way from the PubChem data.
     """
     with open(pubchem) as f:
         parsed_json = json.load(f)

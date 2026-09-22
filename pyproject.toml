@@ -12,7 +12,7 @@ python = "~3.11"
 solidpython2 = "^2.1.0"
 jupyter = "^1.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 mypy = "^1.10.0"
 types-requests = "^2.27.14"
 flake8 = "^4.0.1"

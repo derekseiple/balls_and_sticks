@@ -5,72 +5,81 @@
 # Licensed under Creative Commons BY-NC-SA 3.0. See license file.
 #
 
-from solid2 import circle, sphere, square, cube, cylinder
+from solid2 import cylinder
 
 
 class GlueJoint:
     """This class holds the geometry of the glue joint used in the FixedBondModel class. It is used to connect two
     atoms together in a double or triple bond. By definition those types of bonds do not move/rotate, so the best thing
     is to just glue them together, but this joint will ensure they are aligned while being glued.
-    The joint is keyed by a spherical tab on the positive x-axis of the ring, which drops into a matching pocket in
-    each atom. Both atoms of a bond put that pocket on the same side, so the tab only lets them be glued at the one
-    angle that has them oriented correctly with respect to each other.
-    This class has two methods, one to generate the ring model and one to generate the complementary space to ring fits
-    into.
+    The joint is a pair of holes that a short piece of filament is glued into. One hole is on the axis of the bond and
+    the other is out along the positive x-axis. Both atoms of a bond put that second hole on the same side, so the pair
+    of pins only lets them be glued at the one angle that has them oriented correctly with respect to each other.
+    There is nothing to print for this joint, so this class only generates the space to remove from the atoms.
     """
 
     def __init__(
         self,
-        clearance: float = 0.1,
-        major_radius: float = 3.25,
-        minor_radius: float = 1.75,
+        clearance: float = 0.25,
+        pin_diameter: float = 1.75,
+        pin_offset: float = 5.0,
+        depth: float = 4.0,
     ) -> None:
         """Constructor.
 
         Parameters
         ----------
         clearance : float
-            The space between the ring and the torus that holds it.
+            The space between the pin and the hole that holds it, so that the filament slides in rather than having to
+            be forced.
 
-        major_radius : float
-            The major radius of the ring. This is the distance from the axis of the joint to the center of the torus
-            tube.
+        pin_diameter : float
+            The diameter of the filament used for the pins.
 
-        minor_radius : float
-            The minor radius of the ring. This is the radius of the torus tube itself. This is also the radius of the
-            key that sticks out of the ring.
+        pin_offset : float
+            The distance from the axis of the joint out to the second hole. Since the atom is cut off at a circular
+            face, this has to be small enough that the hole stays on that face.
+
+        depth : float
+            How far each hole reaches into an atom.
         """
         self.__clearance: float = clearance
-        self.__major_radius: float = major_radius
-        self.__minor_radius: float = minor_radius
+        self.__pin_diameter: float = pin_diameter
+        self.__pin_offset: float = pin_offset
+        self.__depth: float = depth
 
     @property
     def clearance(self) -> float:
         return self.__clearance
 
     @property
-    def major_radius(self) -> float:
-        return self.__major_radius
+    def pin_diameter(self) -> float:
+        return self.__pin_diameter
 
     @property
-    def minor_radius(self) -> float:
-        return self.__minor_radius
+    def pin_offset(self) -> float:
+        return self.__pin_offset
 
-    def ring_model(self):
-        """This generates the ring model that will fit into the torus shape."""
-        model = square((self.minor_radius - self.clearance) * (2 ** 0.5), center=True).right(self.major_radius)
-        model = model.rotate_extrude()
-        right_offset = self.major_radius + self.minor_radius
-        model += cube((self.minor_radius - self.clearance) * (2 ** 0.5), center=True).right(right_offset)
-        return model
+    @property
+    def depth(self) -> float:
+        return self.__depth
+
+    @property
+    def hole_radius(self) -> float:
+        """The radius of the holes left in the atoms, which is the filament plus the clearance."""
+        return (self.pin_diameter + self.clearance) / 2
+
+    @property
+    def receiver_outer_radius(self) -> float:
+        """The distance from the axis of the joint out to the furthest material the receiver removes. Anything else we
+        put on the face of the atom, such as a label, has to stay outside of this.
+        """
+        return self.pin_offset + self.hole_radius
 
     def receiver_model(self):
-        """This generates the torus shape that the ring will fit into. This is the shape that will be removed from the
-        atom to make space for the ring.
+        """This generates the two holes that the pins fit into. This is the shape that will be removed from the atom to
+        make space for them. The holes straddle the face where the two atoms meet, so each atom is left with a hole a
+        depth deep and the pin bridges the two.
         """
-        model = circle(self.minor_radius).right(self.major_radius)
-        model = model.rotate_extrude()
-        model += sphere(self.minor_radius).right(self.major_radius + self.minor_radius)
-        # ADD a cylindar with minor radius that bridges the sphere and ring
-        model += cylinder(h=self.minor_radius, r=self.minor_radius).rotate(0, 90, 0).right(self.major_radius)
-        return model
+        hole = cylinder(h=2 * self.depth, r=self.hole_radius, center=True)
+        return hole + hole.right(self.pin_offset)

@@ -49,6 +49,6 @@ class AdeninePositions(MoleculePositions):
         bond_orders = positions.bond_orders
         bond_orders[bond_orders == 1] = 2
         # We label the atoms to make it easier to assemble
-        labels = ['N7', 'N9', 'N3', 'N1', 'N6', 'C5', 'C4', 'C6', 'C8', 'C2', 'H9', 'H8', 'H2', 'H6', 'H6']
+        labels = ['N7', 'N9', 'N3', 'N1', 'N6', 'C5', 'C4', 'C6', 'C8', 'C2', 'H9', 'H8', 'H2', 'H6_1', 'H6_2']
 
         return AdeninePositions(positions.atoms, bond_orders, labels)
