@@ -28,7 +28,7 @@ class BondModel:
         raise NotImplementedError("The model method must be implemented by the subclass.")
 
     def apply_label(self, model, inner_radius: float, outer_radius: float, label: Optional[str]):
-        if label is not None:
+        if label is not None and inner_radius < outer_radius:
             model += linear_extrude(1)(
                 revolve_text(inner_radius, outer_radius, label + ' ' + label + ' ').mirror(0, 1, 0)
             ).translate(0, 0, -0.5)
@@ -72,7 +72,7 @@ class SingleBondModel(BondModel):
             spherical_cap(r=snap.clearance / 2 + snap.radius - snap.lip)
             .translate(0, 0, 4 * (snap.lip - EPS) + snap.indent - EPS))
         model = receiver + cap
-        return self.apply_label(model, snap.radius + 0.25, self._max_label_radius - 0.25, label)
+        return self.apply_label(model, snap.radius + 0.5, self._max_label_radius - 1.0, label)
 
 
 class FixedBondModel(BondModel):
@@ -82,9 +82,11 @@ class FixedBondModel(BondModel):
 
     def __init__(
         self,
-        max_label_radius: float
+        max_label_radius: float,
+        clearance: Optional[float] = None
     ) -> None:
         self._max_label_radius = max_label_radius
+        self._clearance = clearance
 
     def model(
         self,
@@ -92,14 +94,21 @@ class FixedBondModel(BondModel):
     ):
         """We return the space that the glue joint occupies so that we can subtract it from the atom model."""
         glue_joint = GlueJoint()
+        if self._clearance:
+            glue_joint = GlueJoint(clearance=self._clearance)
         model = glue_joint.receiver_model()
-        inner_radius = glue_joint.major_radius + glue_joint.minor_radius + glue_joint.clearance
-        return self.apply_label(model, inner_radius + 0.25, self._max_label_radius - 0.25, label)
+        return self.apply_label(model, glue_joint.receiver_outer_radius + 0.5, self._max_label_radius - 1.0, label)
 
 
-def bond_model_from_order(bond_order: int, max_label_radius: Optional[float] = None) -> BondModel:
+def bond_model_from_order(
+    bond_order: int,
+    is_maximal_neighbor: bool,
+    max_label_radius: Optional[float] = None
+) -> BondModel:
     """This function will return the bond model that corresponds to the given bond order. This allows us to easily
-    switch between bond models based on the bond order.
+    switch between bond models based on the bond order. If the bond is the maximal neighbor, then we can opt to use a
+    larger clearance for the glue joint. This is because the tolerance on any glue joints on the bottom surface are
+    tighter than on other surfaces.
     """
     if bond_order == 0:
         return NoBondModel()
@@ -110,6 +119,6 @@ def bond_model_from_order(bond_order: int, max_label_radius: Optional[float] = N
     if bond_order == 1:
         return SingleBondModel(max_label_radius)
     if bond_order in [2, 3]:
-        return FixedBondModel(max_label_radius)
+        return FixedBondModel(max_label_radius, 0.5 if is_maximal_neighbor else None)
 
     raise ValueError(f"The bond order {bond_order} is not supported.")

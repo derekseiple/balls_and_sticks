@@ -6,7 +6,7 @@
 #
 
 from typing import List
-from solid2 import sphere, color
+from solid2 import sphere, color, set_global_fn
 from src.atoms.atom_position import AtomPosition
 
 
@@ -28,6 +28,7 @@ class MoleculeRepresentation(object):
         """This generates a 3D model of the molecule. This is done by creating a sphere for each atom in the molecule
         in the right position and applying the correct color to the sphere based on the element of the atom.
         """
+        set_global_fn(100)
         model = sphere(0)
         for atom in self._atoms:
             model += color(atom.element.cpk_color)(
